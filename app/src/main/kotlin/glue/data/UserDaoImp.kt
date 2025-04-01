@@ -6,6 +6,7 @@ import model.User
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
+import plugins.hashPassword
 import user.UserDao
 import user.UserRow
 
@@ -15,7 +16,7 @@ class UserDaoImp : UserDao {
         return dbQuery {
             UserRow.insert {
                 it[userName] = params.name
-                it[userPassword] = params.password
+                it[userPassword] = hashPassword(params.password)
                 it[userEmail] = params.email
             }
                 .resultedValues

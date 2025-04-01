@@ -1,3 +1,5 @@
+package plugins
+
 import glue.data.dataModule
 import glue.domain.domainModule
 import io.ktor.server.application.*

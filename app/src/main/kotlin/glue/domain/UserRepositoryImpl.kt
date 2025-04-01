@@ -7,6 +7,8 @@ import model.AuthData
 import model.AuthResponse
 import model.SingInParams
 import model.SingUpParams
+import plugins.generateToken
+import plugins.hashPassword
 import repository.UserRepository
 import user.UserDao
 
@@ -32,7 +34,7 @@ class UserRepositoryImpl(
                             name = user.name,
                             bio = user.bio,
                             avatar = user.avatar,
-                            token = "token",
+                            token = generateToken(params.email),
                             followersCount = 0,
                             followingCount = 0,
                         )
@@ -57,7 +59,8 @@ class UserRepositoryImpl(
                 )
             )
         } else {
-            if (user.password == params.password) {
+            val hashedPassword = hashPassword(params.password)
+            if (user.password == hashedPassword) {
                 Response.Success(
                     code = HttpStatusCode.OK,
                     data = AuthResponse(
@@ -66,7 +69,7 @@ class UserRepositoryImpl(
                             name = user.name,
                             bio = user.bio,
                             avatar = user.avatar,
-                            token = "token",
+                            token = generateToken(params.email),
                             followersCount = 0,
                             followingCount = 0,
                         )
