@@ -2,6 +2,9 @@ package glue.repository
 
 import Response
 import io.ktor.http.*
+import model.dto.User.Companion.toUserInfoResponse
+import model.response.BaseResponse
+import model.response.UserInfoResponse
 import repository.UserRepository
 import table.UserTable
 
@@ -14,12 +17,15 @@ class UserRepositoryImpl(
         return if (user == null) {
             Response.Error(
                 code = HttpStatusCode.NotFound,
-                data = "User with $email email not exist"
+                data = BaseResponse(
+                    isSuccess = false,
+                    message = "User with email '$email' not exist"
+                )
             )
         } else {
             Response.Success(
                 code = HttpStatusCode.OK,
-                data = user
+                data = user.toUserInfoResponse()
             )
         }
     }

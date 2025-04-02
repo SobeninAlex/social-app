@@ -7,7 +7,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import model.request.FollowRequest
-import model.response.FollowAndUnfollowResponse
+import model.response.BaseResponse
 import repository.FollowersRepository
 
 fun Route.followsRouting(repository: FollowersRepository) {
@@ -16,7 +16,7 @@ fun Route.followsRouting(repository: FollowersRepository) {
             val request = call.receiveNullable<FollowRequest>() ?: run {
                 call.respond(
                     status = HttpStatusCode.BadRequest,
-                    message = FollowAndUnfollowResponse(
+                    message = BaseResponse(
                         isSuccess = false,
                         message = ErrorMessage.SOMETHING_WRONG
                     )

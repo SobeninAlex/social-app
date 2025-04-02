@@ -2,6 +2,7 @@ package model.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import model.response.UserInfoResponse
 
 @Serializable
 data class User(
@@ -13,4 +14,18 @@ data class User(
     @SerialName("password") val password: String,
     @SerialName("followers_count") val followersCount: Int = 0,
     @SerialName("following_count") val followingCount: Int = 0,
-)
+) {
+
+    companion object {
+
+        fun User.toUserInfoResponse() = UserInfoResponse(
+            id = id,
+            name = name,
+            email = email,
+            bio = bio,
+            avatar = avatar,
+            followersCount = followersCount,
+            followingCount = followingCount
+        )
+    }
+}
