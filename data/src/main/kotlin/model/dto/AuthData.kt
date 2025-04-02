@@ -1,11 +1,11 @@
-package model
+package model.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class AuthData(
-    @SerialName("id") val id: Int,
+    @SerialName("id") val id: String,
     @SerialName("name") val name: String,
     @SerialName("bio") val bio: String,
     @SerialName("avatar") val avatar: String? = null,

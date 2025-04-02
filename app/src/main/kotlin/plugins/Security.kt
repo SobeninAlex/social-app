@@ -8,7 +8,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.util.*
-import model.AuthResponse
+import model.response.AuthResponse
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import javax.crypto.Mac
@@ -57,13 +57,4 @@ fun generateToken(email: String): String {
         .withClaim(CLAIM, email)
         .withExpiresAt(LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.UTC))
         .sign(algorithm)
-}
-
-private val hashSecretKey = System.getenv("HASH_SECRET_KEY").toByteArray()
-private val hmacKey = SecretKeySpec(hashSecretKey, "HmacSHA1")
-
-fun hashPassword(password: String): String {
-    val hmac = Mac.getInstance("HmacSHA1")
-    hmac.init(hmacKey)
-    return hex(hmac.doFinal(password.toByteArray(Charsets.UTF_8)))
 }

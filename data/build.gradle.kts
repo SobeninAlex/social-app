@@ -19,6 +19,7 @@ dependencies {
     implementation(libs.h2)
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.java.time)
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.auth.jwt)
     implementation(libs.ktor.server.netty)
@@ -30,5 +31,4 @@ dependencies {
     implementation(libs.hikari)
 
     implementation(project(":utils"))
-    implementation(project(":domain"))
 }

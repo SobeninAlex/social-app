@@ -5,14 +5,14 @@ import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import model.AuthResponse
-import model.SingInParams
-import model.SingUpParams
-import repository.UserRepository
+import model.response.AuthResponse
+import model.request.SingInRequest
+import model.request.SingUpRequest
+import repository.AuthRepository
 
-fun Route.authRouting(repository: UserRepository) {
+fun Route.authRouting(repository: AuthRepository) {
     post("/signup") {
-        val request = call.receiveNullable<SingUpParams>() ?: run {
+        val request = call.receiveNullable<SingUpRequest>() ?: run {
             call.respond(
                 status = HttpStatusCode.BadRequest,
                 message = AuthResponse(
@@ -39,7 +39,7 @@ fun Route.authRouting(repository: UserRepository) {
     }
 
     post("/signin") {
-        val request = call.receiveNullable<SingInParams>() ?: run {
+        val request = call.receiveNullable<SingInRequest>() ?: run {
             call.respond(
                 status = HttpStatusCode.BadRequest,
                 message = AuthResponse(

@@ -38,6 +38,5 @@ dependencies {
     implementation(libs.hikari)
 
     implementation(project(":data"))
-    implementation(project(":domain"))
     implementation(project(":utils"))
 }

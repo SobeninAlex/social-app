@@ -1,22 +1,23 @@
-package glue.domain
+package glue.repository
 
 import ErrorMessage
 import Response
+import hashPassword
 import io.ktor.http.*
-import model.AuthData
-import model.AuthResponse
-import model.SingInParams
-import model.SingUpParams
+import model.dto.AuthData
+import model.request.SingInRequest
+import model.request.SingUpRequest
+import model.request.SingUpRequest.Companion.toUser
+import model.response.AuthResponse
 import plugins.generateToken
-import plugins.hashPassword
-import repository.UserRepository
-import user.UserDao
+import repository.AuthRepository
+import table.UserTable
 
-class UserRepositoryImpl(
-    private val userDao: UserDao
-) : UserRepository {
+class AuthRepositoryImpl(
+    private val userTable: UserTable,
+): AuthRepository {
 
-    override suspend fun signUp(params: SingUpParams): Response<AuthResponse> {
+    override suspend fun signUp(params: SingUpRequest): Response<AuthResponse> {
         return if (userAlreadyExists(params.email)) {
             Response.Error(
                 code = HttpStatusCode.Conflict,
@@ -25,7 +26,7 @@ class UserRepositoryImpl(
                 )
             )
         } else {
-            userDao.insert(params)?.let { user ->
+            userTable.insert(params.toUser())?.let { user ->
                 Response.Success(
                     code = HttpStatusCode.Created,
                     data = AuthResponse(
@@ -35,8 +36,8 @@ class UserRepositoryImpl(
                             bio = user.bio,
                             avatar = user.avatar,
                             token = generateToken(params.email),
-                            followersCount = 0,
-                            followingCount = 0,
+                            followersCount = user.followersCount,
+                            followingCount = user.followingCount,
                         )
                     )
                 )
@@ -49,8 +50,8 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun signIn(params: SingInParams): Response<AuthResponse> {
-        val user = userDao.findUserByEmail(params.email)
+    override suspend fun signIn(params: SingInRequest): Response<AuthResponse> {
+        val user = userTable.getUserByEmail(params.email)
         return if (user == null) {
             Response.Error(
                 code = HttpStatusCode.NotFound,
@@ -70,8 +71,8 @@ class UserRepositoryImpl(
                             bio = user.bio,
                             avatar = user.avatar,
                             token = generateToken(params.email),
-                            followersCount = 0,
-                            followingCount = 0,
+                            followersCount = user.followersCount,
+                            followingCount = user.followingCount,
                         )
                     )
                 )
@@ -87,6 +88,6 @@ class UserRepositoryImpl(
     }
 
     private suspend fun userAlreadyExists(email: String): Boolean {
-        return userDao.findUserByEmail(email) != null
+        return userTable.getUserByEmail(email) != null
     }
 }
