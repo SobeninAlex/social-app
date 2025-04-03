@@ -55,6 +55,6 @@ fun generateToken(email: String): String {
         .withAudience(jwtAudience)
         .withIssuer(jwtIssuer)
         .withClaim(CLAIM, email)
-        .withExpiresAt(LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.UTC))
+        .withExpiresAt(LocalDateTime.now().plusMinutes(10).toInstant(ZoneOffset.UTC))
         .sign(algorithm)
 }
