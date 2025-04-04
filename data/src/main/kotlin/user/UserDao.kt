@@ -1,49 +1,47 @@
-package table
+package user
 
 import DatabaseFactory.dbQuery
 import hashPassword
-import model.dto.User
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.plus
-import java.util.UUID
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.update
+import user.UserTable.followersCount
+import user.UserTable.followingCount
+import user.UserTable.userAvatar
+import user.UserTable.userBio
+import user.UserTable.userEmail
+import user.UserTable.userId
+import user.UserTable.userName
+import user.UserTable.userPassword
+import java.util.*
 
-object UserTable: Table(name = "users") {
+class UserDao {
 
-    private val userId = text(name = "user_id")
-    private val userName = varchar(name = "user_name", length = 255)
-    private val userEmail = varchar(name = "user_email", length = 255)
-    private val userBio = text(name = "user_bio").default("")
-    private val userPassword = varchar(name = "user_password", length = 100)
-    private val userAvatar = text(name = "user_avatar").nullable()
-    private val followersCount = integer("followers_count").default(0)
-    private val followingCount = integer("following_count").default(0)
-
-    override val primaryKey: PrimaryKey
-        get() = PrimaryKey(userId)
-
-    suspend fun insert(user: User): User? {
+    suspend fun insert(user: UserRow): UserRow? {
         return dbQuery {
             UserTable.insert {
                 it[userId] = UUID.randomUUID().toString()
-                it[userName] = user.name
-                it[userEmail] = user.email
-                it[userBio] = user.bio
-                it[userPassword] = hashPassword(user.password)
-                it[userAvatar] = user.avatar
+                it[userName] = user.userName
+                it[userEmail] = user.userEmail
+                it[userBio] = user.userBio
+                it[userPassword] = hashPassword(user.userPassword)
+                it[userAvatar] = user.userAvatar
                 it[followersCount] = user.followersCount
                 it[followingCount] = user.followingCount
             }
                 .resultedValues
                 ?.firstOrNull()
-                ?.toUser()
+                ?.toUserRow()
         }
     }
 
-    suspend fun getUserByEmail(email: String): User? {
+    suspend fun getUserByEmail(email: String): UserRow? {
         return dbQuery {
             UserTable.selectAll()
                 .where { userEmail eq email }
-                .map { it.toUser() }
+                .map { it.toUserRow() }
                 .singleOrNull()
         }
     }
@@ -78,14 +76,14 @@ object UserTable: Table(name = "users") {
         }
     }
 
-    private fun ResultRow.toUser(): User {
-        return User(
-            id = this[userId],
-            name = this[userName],
-            email = this[userEmail],
-            bio = this[userBio],
-            avatar = this[userAvatar],
-            password = this[userPassword],
+    private fun ResultRow.toUserRow(): UserRow {
+        return UserRow(
+            userId = this[userId],
+            userName = this[userName],
+            userEmail = this[userEmail],
+            userBio = this[userBio],
+            userAvatar = this[userAvatar],
+            userPassword = this[userPassword],
             followersCount = this[followersCount],
             followingCount = this[followingCount],
         )

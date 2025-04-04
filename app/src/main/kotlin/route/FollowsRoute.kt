@@ -18,7 +18,7 @@ fun Route.followsRouting(repository: FollowersRepository) {
                     status = HttpStatusCode.BadRequest,
                     message = BaseResponse(
                         isSuccess = false,
-                        message = ErrorMessage.SOMETHING_WRONG
+                        errorMessage = ErrorMessage.SOMETHING_WRONG
                     )
                 )
                 return@post

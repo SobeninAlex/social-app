@@ -5,31 +5,31 @@ import Response
 import io.ktor.http.*
 import model.response.BaseResponse
 import repository.FollowersRepository
-import table.FollowsTable
-import table.UserTable
+import follows.FollowsDao
+import user.UserDao
 
 class FollowersRepositoryImpl(
-    private val userTable: UserTable,
-    private val followsTable: FollowsTable,
+    private val userDao: UserDao,
+    private val followsDao: FollowsDao,
 ) : FollowersRepository {
 
     override suspend fun followUser(follower: String, following: String): Response<BaseResponse> {
-        return if (FollowsTable.isAlreadyFollowing(follower, following)) {
+        return if (followsDao.isAlreadyFollowing(follower, following)) {
             Response.Error(
                 code = HttpStatusCode.Forbidden,
                 data = BaseResponse(
                     isSuccess = false,
-                    message = "You are already following this user!",
+                    errorMessage = "You are already following this user!",
                 )
             )
         } else {
-            val success = followsTable.followUser(follower, following)
+            val success = followsDao.followUser(follower, following)
             if (success) {
-                userTable.updateFollowsCount(follower, following, true)
+                userDao.updateFollowsCount(follower, following, true)
                 Response.Success(
                     code = HttpStatusCode.OK,
                     data = BaseResponse(
-                        isSuccess = true
+                        isSuccess = true,
                     )
                 )
             } else {
@@ -37,7 +37,7 @@ class FollowersRepositoryImpl(
                     code = HttpStatusCode.InternalServerError,
                     data = BaseResponse(
                         isSuccess = false,
-                        message = ErrorMessage.SOMETHING_WRONG
+                        errorMessage = ErrorMessage.SOMETHING_WRONG
                     )
                 )
             }
@@ -45,9 +45,9 @@ class FollowersRepositoryImpl(
     }
 
     override suspend fun unfollowUser(follower: String, following: String): Response<BaseResponse> {
-        val success = followsTable.unfollowUser(follower, following)
+        val success = followsDao.unfollowUser(follower, following)
         return if (success) {
-            userTable.updateFollowsCount(follower, following, false)
+            userDao.updateFollowsCount(follower, following, false)
             Response.Success(
                 code = HttpStatusCode.OK,
                 data = BaseResponse(isSuccess = true)
@@ -57,7 +57,7 @@ class FollowersRepositoryImpl(
                 code = HttpStatusCode.InternalServerError,
                 data = BaseResponse(
                     isSuccess = false,
-                    message = ErrorMessage.SOMETHING_WRONG
+                    errorMessage = ErrorMessage.SOMETHING_WRONG
                 )
             )
         }

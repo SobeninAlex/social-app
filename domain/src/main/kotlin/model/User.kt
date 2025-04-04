@@ -1,10 +1,10 @@
-package model.response
+package model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserInfoResponse(
+data class User(
     @SerialName("id") val id: String,
     @SerialName("name") val name: String,
     @SerialName("email") val email: String,

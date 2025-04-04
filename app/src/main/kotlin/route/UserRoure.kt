@@ -16,7 +16,7 @@ fun Route.userRouting(userRepository: UserRepository) {
                     status = HttpStatusCode.BadRequest,
                     message = BaseResponse(
                         isSuccess = false,
-                        message = "query parameter email is required"
+                        errorMessage = "query parameter email is required"
                     )
                 )
                 return@get
@@ -32,7 +32,10 @@ fun Route.userRouting(userRepository: UserRepository) {
             }.onFailure { error ->
                 call.respond(
                     status = HttpStatusCode.Conflict,
-                    message = error.message ?: ErrorMessage.SOMETHING_WRONG
+                    message = BaseResponse(
+                        isSuccess = false,
+                        errorMessage = error.message ?: ErrorMessage.SOMETHING_WRONG
+                    )
                 )
             }
         }

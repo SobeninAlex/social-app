@@ -2,7 +2,7 @@ package model.response
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import model.dto.AuthData
+import model.AuthData
 
 @Serializable
 data class AuthResponse(

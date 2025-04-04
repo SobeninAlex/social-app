@@ -8,7 +8,8 @@ fun Application.configureKoin() {
     install(Koin) {
         slf4jLogger()
         modules(
-            dataModule
+            dataModule,
+            domainModule,
         )
     }
 }

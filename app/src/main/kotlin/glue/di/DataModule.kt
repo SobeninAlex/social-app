@@ -1,25 +1,17 @@
 package glue.di
 
-import glue.repository.AuthRepositoryImpl
-import glue.repository.FollowersRepositoryImpl
-import glue.repository.UserRepositoryImpl
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.bind
+import follows.FollowsDao
 import org.koin.dsl.module
-import repository.AuthRepository
-import repository.FollowersRepository
-import repository.UserRepository
-import table.FollowsTable
-import table.UserTable
+import post.PostDao
+import post_like.PostLikeDao
+import user.UserDao
 
 val dataModule = module {
-    single<UserTable> { UserTable }
+    factory<UserDao> { UserDao() }
 
-    single<FollowsTable> { FollowsTable }
+    factory<FollowsDao> { FollowsDao() }
 
-    singleOf(::AuthRepositoryImpl).bind<AuthRepository>()
+    factory<PostDao> { PostDao() }
 
-    singleOf(::UserRepositoryImpl).bind<UserRepository>()
-
-    singleOf(::FollowersRepositoryImpl).bind<FollowersRepository>()
+    factory<PostLikeDao> { PostLikeDao() }
 }

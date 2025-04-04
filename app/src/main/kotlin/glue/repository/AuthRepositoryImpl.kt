@@ -2,19 +2,19 @@ package glue.repository
 
 import ErrorMessage
 import Response
+import glue.toUserRow
 import hashPassword
 import io.ktor.http.*
-import model.dto.AuthData
+import model.AuthData
 import model.request.SingInRequest
 import model.request.SingUpRequest
-import model.request.SingUpRequest.Companion.toUser
 import model.response.AuthResponse
 import plugins.generateToken
 import repository.AuthRepository
-import table.UserTable
+import user.UserDao
 
 class AuthRepositoryImpl(
-    private val userTable: UserTable,
+    private val userDao: UserDao,
 ): AuthRepository {
 
     override suspend fun signUp(params: SingUpRequest): Response<AuthResponse> {
@@ -26,18 +26,18 @@ class AuthRepositoryImpl(
                 )
             )
         } else {
-            userTable.insert(params.toUser())?.let { user ->
+            userDao.insert(params.toUserRow())?.let { userRow ->
                 Response.Success(
                     code = HttpStatusCode.Created,
                     data = AuthResponse(
                         authData = AuthData(
-                            id = user.id,
-                            name = user.name,
-                            bio = user.bio,
-                            avatar = user.avatar,
+                            id = userRow.userId,
+                            name = userRow.userName,
+                            bio = userRow.userBio,
+                            avatar = userRow.userAvatar,
                             token = generateToken(params.email),
-                            followersCount = user.followersCount,
-                            followingCount = user.followingCount,
+                            followersCount = userRow.followersCount,
+                            followingCount = userRow.followingCount,
                         )
                     )
                 )
@@ -51,8 +51,8 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun signIn(params: SingInRequest): Response<AuthResponse> {
-        val user = userTable.getUserByEmail(params.email)
-        return if (user == null) {
+        val userRow = userDao.getUserByEmail(params.email)
+        return if (userRow == null) {
             Response.Error(
                 code = HttpStatusCode.NotFound,
                 data = AuthResponse(
@@ -61,18 +61,18 @@ class AuthRepositoryImpl(
             )
         } else {
             val hashedPassword = hashPassword(params.password)
-            if (user.password == hashedPassword) {
+            if (userRow.userPassword == hashedPassword) {
                 Response.Success(
                     code = HttpStatusCode.OK,
                     data = AuthResponse(
                         authData = AuthData(
-                            id = user.id,
-                            name = user.name,
-                            bio = user.bio,
-                            avatar = user.avatar,
+                            id = userRow.userId,
+                            name = userRow.userName,
+                            bio = userRow.userBio,
+                            avatar = userRow.userAvatar,
                             token = generateToken(params.email),
-                            followersCount = user.followersCount,
-                            followingCount = user.followingCount,
+                            followersCount = userRow.followersCount,
+                            followingCount = userRow.followingCount,
                         )
                     )
                 )
@@ -88,6 +88,6 @@ class AuthRepositoryImpl(
     }
 
     private suspend fun userAlreadyExists(email: String): Boolean {
-        return userTable.getUserByEmail(email) != null
+        return userDao.getUserByEmail(email) != null
     }
 }

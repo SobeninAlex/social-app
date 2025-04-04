@@ -1,16 +1,13 @@
-package table
+package follows
 
 import DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.javatime.CurrentDateTime
-import org.jetbrains.exposed.sql.javatime.datetime
+import follows.FollowsTable.followDate
+import follows.FollowsTable.followerId
+import follows.FollowsTable.followingId
 
-object FollowsTable : Table(name = "follows") {
-
-    private val followerId = text("follower_id")
-    private val followingId = text("following_id")
-    private val followDate = datetime(name = "follow_date").defaultExpression(CurrentDateTime)
+class FollowsDao {
 
     suspend fun followUser(
         follower: String,
@@ -40,6 +37,17 @@ object FollowsTable : Table(name = "follows") {
     suspend fun getFollowers(userId: String, pageNumber: Int, pageSize: Int): List<String> {
         return dbQuery {
             FollowsTable.selectAll()
+                .where { followingId eq userId }
+                .orderBy(followDate, SortOrder.DESC)
+                .limit(count = pageSize)
+                .offset(start = ((pageNumber - 1) * pageSize).toLong())
+                .map { it[followerId] }
+        }
+    }
+
+    suspend fun getFollowing(userId: String, pageNumber: Int, pageSize: Int): List<String> {
+        return dbQuery {
+            FollowsTable.selectAll()
                 .where { followerId eq userId }
                 .orderBy(followDate, SortOrder.DESC)
                 .limit(count = pageSize)
@@ -48,14 +56,11 @@ object FollowsTable : Table(name = "follows") {
         }
     }
 
-    suspend fun getFollowing(userId: String, pageNumber: Int, pageSize: Int): List<String> {
+    suspend fun getAllFollowing(userId: String): List<String> {
         return dbQuery {
             FollowsTable.selectAll()
-                .where { followingId eq userId }
-                .orderBy(followDate, SortOrder.DESC)
-                .limit(count = pageSize)
-                .offset(start = ((pageNumber - 1) * pageSize).toLong())
-                .map { it[followerId] }
+                .where { followerId eq userId }
+                .map { it[followingId] }
         }
     }
 

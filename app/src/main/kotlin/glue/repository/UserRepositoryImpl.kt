@@ -1,31 +1,33 @@
 package glue.repository
 
 import Response
+import glue.toUser
 import io.ktor.http.*
-import model.dto.User.Companion.toUserInfoResponse
-import model.response.BaseResponse
-import model.response.UserInfoResponse
+import model.response.InfoUserResponse
 import repository.UserRepository
-import table.UserTable
+import user.UserDao
 
 class UserRepositoryImpl(
-    private val userTable: UserTable,
+    private val userDao: UserDao,
 ) : UserRepository {
 
-    override suspend fun getUserByEmail(email: String): Response<Any> {
-        val user = userTable.getUserByEmail(email)
-        return if (user == null) {
+    override suspend fun getUserByEmail(email: String): Response<InfoUserResponse> {
+        val userRow = userDao.getUserByEmail(email)
+        return if (userRow == null) {
             Response.Error(
                 code = HttpStatusCode.NotFound,
-                data = BaseResponse(
+                data = InfoUserResponse(
                     isSuccess = false,
-                    message = "User with email '$email' not exist"
+                    errorMessage = "User with email '$email' not exist"
                 )
             )
         } else {
             Response.Success(
                 code = HttpStatusCode.OK,
-                data = user.toUserInfoResponse()
+                data = InfoUserResponse(
+                    isSuccess = true,
+                    user = userRow.toUser()
+                )
             )
         }
     }

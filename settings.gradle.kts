@@ -5,3 +5,4 @@ rootProject.name = "social-app"
 include("app")
 include("data")
 include("utils")
+include("domain")
