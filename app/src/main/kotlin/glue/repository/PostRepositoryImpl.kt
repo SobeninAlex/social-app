@@ -95,7 +95,7 @@ class PostRepositoryImpl(
 
         return if (postRow != null) {
             val isPostLiked = postLikeDao.isPostLikedByUser(postId = postId, userId = userId)
-            val isOwnPost = postRow.postId == userId
+            val isOwnPost = postRow.userId == userId
             Response.Success(
                 code = HttpStatusCode.OK,
                 data = PostResponse(
@@ -140,7 +140,7 @@ class PostRepositoryImpl(
         val postIsDeleted = postDao.deletePost(postId = postId)
         return if (postIsDeleted) {
             Response.Success(
-                code = HttpStatusCode.Created,
+                code = HttpStatusCode.OK,
                 data = PostResponse(isSuccess = true)
             )
         } else {
