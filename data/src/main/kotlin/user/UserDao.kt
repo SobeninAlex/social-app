@@ -3,6 +3,7 @@ package user
 import DatabaseFactory.dbQuery
 import hashPassword
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.plus
 import org.jetbrains.exposed.sql.insert
@@ -95,6 +96,23 @@ class UserDao {
             } > 0
 
             successFollower && successFollowing
+        }
+    }
+
+    suspend fun getUsers(ids: List<String>): List<UserRow> {
+        return dbQuery {
+            UserTable.selectAll()
+                .where { userId inList ids }
+                .map { it.toUserRow() }
+        }
+    }
+
+    suspend fun getPopularUsers(limit: Int): List<UserRow> {
+        return dbQuery {
+            UserTable.selectAll()
+                .orderBy(column = followersCount, order = SortOrder.DESC)
+                .limit(count = limit)
+                .map { it.toUserRow() }
         }
     }
 

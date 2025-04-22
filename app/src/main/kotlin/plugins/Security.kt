@@ -9,6 +9,8 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.util.*
 import model.response.AuthResponse
+import org.koin.ktor.ext.inject
+import user.UserDao
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import javax.crypto.Mac
@@ -21,6 +23,8 @@ private val algorithm = Algorithm.HMAC256(jwtSecret)
 private const val CLAIM = "email"
 
 fun Application.configureSecurity() {
+    val userDao by inject<UserDao>()
+
     authentication {
         jwt {
             verifier(
@@ -32,7 +36,15 @@ fun Application.configureSecurity() {
             
             validate { credential ->
                 if (credential.payload.getClaim(CLAIM).asString() != null) {
-                    JWTPrincipal(credential.payload)
+                    val userExist = userDao.findByEmail(
+                        email = credential.payload.getClaim(CLAIM).asString()
+                    ) != null
+                    val isValidAudience = credential.payload.audience.contains(jwtAudience)
+                    if (userExist && isValidAudience) {
+                        JWTPrincipal(credential.payload)
+                    } else {
+                        null
+                    }
                 } else {
                     null
                 }

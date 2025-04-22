@@ -13,6 +13,7 @@ fun Application.configureRouting() {
     val followerRepository by inject<FollowersRepository>()
     val postRepository by inject<PostRepository>()
     val postCommentsRepository by inject<PostCommentsRepository>()
+    val postLikesRepository by inject<PostLikesRepository>()
 
     routing {
         authRouting(authRepository)
@@ -20,6 +21,7 @@ fun Application.configureRouting() {
         followsRouting(followerRepository)
         postsRoute(postRepository)
         postCommentsRoute(postCommentsRepository)
+        postLikesRoute(postLikesRepository)
 
         staticResources("/", "static")
     }

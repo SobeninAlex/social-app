@@ -5,14 +5,12 @@ import io.ktor.http.*
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
 import io.ktor.server.auth.*
-import io.ktor.server.http.content.file
 import io.ktor.server.request.receiveMultipart
-import io.ktor.server.request.receiveNullable
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import model.request.UpdateUserRequest
-import model.response.BaseResponse
+import model.response.SimpleResponse
 import repository.UserRepository
 import saveFile
 import java.io.File
@@ -25,7 +23,7 @@ fun Route.userRouting(userRepository: UserRepository) {
                 val email = call.request.queryParameters["email"] ?: run {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = "query parameter email is required"
                         )
@@ -43,7 +41,7 @@ fun Route.userRouting(userRepository: UserRepository) {
                 }.onFailure { error ->
                     call.respond(
                         status = HttpStatusCode.Conflict,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = error.message ?: ErrorMessage.SOMETHING_WRONG
                         )
@@ -56,7 +54,7 @@ fun Route.userRouting(userRepository: UserRepository) {
                 val userId = call.parameters["user_id"] ?: run {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = "parameter user_id is required"
                         )
@@ -67,7 +65,7 @@ fun Route.userRouting(userRepository: UserRepository) {
                 val currentUserId = call.request.queryParameters["current_user_id"] ?: run {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = "query parameter current_user_id is required"
                         )
@@ -85,7 +83,7 @@ fun Route.userRouting(userRepository: UserRepository) {
                 }.onFailure { error ->
                     call.respond(
                         status = HttpStatusCode.Conflict,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = error.message ?: ErrorMessage.SOMETHING_WRONG
                         )
@@ -136,7 +134,7 @@ fun Route.userRouting(userRepository: UserRepository) {
 
                     call.respond(
                         status = HttpStatusCode.Conflict,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = ex.message ?: ErrorMessage.SOMETHING_WRONG
                         )

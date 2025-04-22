@@ -10,6 +10,7 @@ object Constants {
     const val BASE_URL = "http://127.0.0.1:8080/"
     const val DEFAULT_PAGE_SIZE = 10
     const val DEFAULT_PAGE = 0
+    const val SUGGESTED_FOLLOWING_LIMIT = 10
 }
 
 object Paths {

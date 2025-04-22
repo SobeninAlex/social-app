@@ -7,5 +7,4 @@ import kotlinx.serialization.Serializable
 data class FollowRequest(
     @SerialName("follower") val follower: String,
     @SerialName("following") val following: String,
-    @SerialName("is_following") val isFollowing: Boolean
 )

@@ -7,7 +7,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import model.request.NewCommentRequest
-import model.response.BaseResponse
+import model.response.SimpleResponse
 import repository.PostCommentsRepository
 
 fun Route.postCommentsRoute(repository: PostCommentsRepository) {
@@ -18,7 +18,7 @@ fun Route.postCommentsRoute(repository: PostCommentsRepository) {
                 val request = call.receiveNullable<NewCommentRequest>() ?: run {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = ErrorMessage.SOMETHING_WRONG
                         )
@@ -36,7 +36,7 @@ fun Route.postCommentsRoute(repository: PostCommentsRepository) {
                 }.onFailure { error ->
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = error.message ?: ErrorMessage.SOMETHING_WRONG
                         )
@@ -49,7 +49,7 @@ fun Route.postCommentsRoute(repository: PostCommentsRepository) {
                 val commentId = call.parameters["comment_id"] ?: run {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = "parameter comment_id is required"
                         )
@@ -60,7 +60,7 @@ fun Route.postCommentsRoute(repository: PostCommentsRepository) {
                 val userId = call.request.queryParameters["user_id"] ?: run {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = "query parameter user_id is required"
                         )
@@ -71,7 +71,7 @@ fun Route.postCommentsRoute(repository: PostCommentsRepository) {
                 val postId = call.request.queryParameters["post_id"] ?: run {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = "query parameter post_id is required"
                         )
@@ -93,7 +93,7 @@ fun Route.postCommentsRoute(repository: PostCommentsRepository) {
                 }.onFailure { error ->
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = error.message ?: ErrorMessage.SOMETHING_WRONG
                         )
@@ -106,7 +106,7 @@ fun Route.postCommentsRoute(repository: PostCommentsRepository) {
                 val postId = call.parameters["post_id"] ?: run {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = "parameter post_id is required"
                         )
@@ -131,7 +131,7 @@ fun Route.postCommentsRoute(repository: PostCommentsRepository) {
                 }.onFailure { error ->
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = BaseResponse(
+                        message = SimpleResponse(
                             isSuccess = false,
                             errorMessage = error.message ?: ErrorMessage.SOMETHING_WRONG
                         )

@@ -8,9 +8,11 @@ import glue.repository.AuthRepositoryImpl
 import glue.repository.UserRepositoryImpl
 import glue.repository.FollowersRepositoryImpl
 import glue.repository.PostCommentsRepositoryImpl
+import glue.repository.PostLikesRepositoryImpl
 import glue.repository.PostRepositoryImpl
 import repository.FollowersRepository
 import repository.PostCommentsRepository
+import repository.PostLikesRepository
 import repository.PostRepository
 import repository.UserRepository
 
@@ -24,4 +26,6 @@ val domainModule = module {
     singleOf(::PostRepositoryImpl).bind<PostRepository>()
 
     singleOf(::PostCommentsRepositoryImpl).bind<PostCommentsRepository>()
+
+    singleOf(::PostLikesRepositoryImpl).bind<PostLikesRepository>()
 }
