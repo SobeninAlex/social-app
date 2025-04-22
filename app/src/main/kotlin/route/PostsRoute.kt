@@ -22,9 +22,9 @@ fun Route.postsRoute(repository: PostRepository) {
             post(path = "/create") {
                 var fileName = ""
                 var postTextRequest: PostTextRequest? = null
-                val multipartPart = call.receiveMultipart()
+                val multipart = call.receiveMultipart()
 
-                multipartPart.forEachPart { part ->
+                multipart.forEachPart { part ->
                     when (part) {
                         is PartData.FileItem -> {
                             fileName = part.saveFile(folderPath = Paths.POST_IMAGES_FOLDER_PATH)

@@ -15,4 +15,6 @@ object Constants {
 object Paths {
     const val POST_IMAGES_FOLDER = "post_images/"
     const val POST_IMAGES_FOLDER_PATH = "app/build/resources/main/static/$POST_IMAGES_FOLDER"
+    const val USER_IMAGES_FOLDER = "user_images/"
+    const val USER_IMAGES_FOLDER_PATH = "app/build/resources/main/static/$USER_IMAGES_FOLDER"
 }

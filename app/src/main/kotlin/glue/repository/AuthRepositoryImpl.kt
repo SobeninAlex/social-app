@@ -51,7 +51,7 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun signIn(params: SingInRequest): Response<AuthResponse> {
-        val userRow = userDao.getUserByEmail(params.email)
+        val userRow = userDao.findByEmail(params.email)
         return if (userRow == null) {
             Response.Error(
                 code = HttpStatusCode.NotFound,
@@ -88,6 +88,6 @@ class AuthRepositoryImpl(
     }
 
     private suspend fun userAlreadyExists(email: String): Boolean {
-        return userDao.getUserByEmail(email) != null
+        return userDao.findByEmail(email) != null
     }
 }

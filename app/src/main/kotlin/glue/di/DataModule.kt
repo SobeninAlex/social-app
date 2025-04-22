@@ -3,6 +3,7 @@ package glue.di
 import follows.FollowsDao
 import org.koin.dsl.module
 import post.PostDao
+import post_comments.PostCommentsDao
 import post_like.PostLikeDao
 import user.UserDao
 
@@ -14,4 +15,6 @@ val dataModule = module {
     factory<PostDao> { PostDao() }
 
     factory<PostLikeDao> { PostLikeDao() }
+
+    factory<PostCommentsDao> { PostCommentsDao() }
 }

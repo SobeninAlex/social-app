@@ -3,6 +3,7 @@ package user
 import DatabaseFactory.dbQuery
 import hashPassword
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.plus
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
@@ -37,12 +38,33 @@ class UserDao {
         }
     }
 
-    suspend fun getUserByEmail(email: String): UserRow? {
+    suspend fun findByEmail(email: String): UserRow? {
         return dbQuery {
             UserTable.selectAll()
                 .where { userEmail eq email }
                 .map { it.toUserRow() }
                 .singleOrNull()
+        }
+    }
+
+    suspend fun findById(id: String): UserRow? {
+        return dbQuery {
+            UserTable.selectAll()
+                .where { userId eq id }
+                .map { it.toUserRow() }
+                .singleOrNull()
+        }
+    }
+
+    suspend fun update(id: String, name: String, bio: String, avatar: String?): Boolean {
+        return dbQuery {
+            UserTable.update(
+                where = { userId eq id },
+            ) {
+                it[userName] = name
+                it[userBio] = bio
+                it[userAvatar] = avatar
+            } > 0
         }
     }
 

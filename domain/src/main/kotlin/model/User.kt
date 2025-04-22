@@ -12,4 +12,6 @@ data class User(
     @SerialName("avatar") val avatar: String?,
     @SerialName("followers_count") val followersCount: Int,
     @SerialName("following_count") val followingCount: Int,
+    @SerialName("is_following") val isFollowing: Boolean?,
+    @SerialName("is_own_profile") val isOwnProfile: Boolean?,
 )

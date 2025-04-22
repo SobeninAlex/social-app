@@ -8,6 +8,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.transactions.transaction
 import follows.FollowsTable
 import post.PostTable
+import post_comments.PostCommentsTable
 import post_like.PostLikeTable
 
 object DatabaseFactory {
@@ -26,6 +27,7 @@ object DatabaseFactory {
                 FollowsTable,
                 PostTable,
                 PostLikeTable,
+                PostCommentsTable,
             )
         }
     }

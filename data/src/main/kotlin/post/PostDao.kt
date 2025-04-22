@@ -3,6 +3,7 @@ package post
 import DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.plus
 import user.UserTable
 import java.util.*
 
@@ -85,6 +86,28 @@ class PostDao {
     suspend fun deletePost(postId: String): Boolean {
         return dbQuery {
             PostTable.deleteWhere { PostTable.postId eq postId } > 0
+        }
+    }
+
+    suspend fun updateLikesCount(postId: String, decrement: Boolean = false): Boolean {
+        return dbQuery {
+            val value = if (decrement) -1 else 1
+            PostTable.update(
+                where = { PostTable.postId eq postId },
+            ) {
+                it.update(column = likesCount, value = likesCount.plus(value))
+            } > 0
+        }
+    }
+
+    suspend fun updateCommentsCount(postId: String, decrement: Boolean = false): Boolean {
+        return dbQuery {
+            val value = if (decrement) -1 else 1
+            PostTable.update(
+                where = { PostTable.postId eq postId },
+            ) {
+                it.update(column = commentsCount, value = commentsCount.plus(value))
+            } > 0
         }
     }
 
