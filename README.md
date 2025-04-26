@@ -1,45 +1,122 @@
 # social-app
+Simple backend for android app
 
-This project was created using the [Ktor Project Generator](https://start.ktor.io).
+## stack
+- ktor
+- postgresql
+- exposed
+- DI koin
+- hikari
+- kotlinx.serialization
+- authentication JWT
 
-Here are some useful links to get you started:
+![database_scheme.png](gradle/database_scheme.png)
 
-- [Ktor Documentation](https://ktor.io/docs/home.html)
-- [Ktor GitHub page](https://github.com/ktorio/ktor)
-- The [Ktor Slack chat](https://app.slack.com/client/T09229ZC6/C0A974TJ9). You'll need to [request an invite](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up) to join.
+## routing
+### auth routes
+- `POST /signup`
+  ```
+  body raw json:
+  {
+     "user_name": "Example Name",
+     "user_email": "test@test.com",
+     "user_password": "example_password"
+  }
+  ```
+- `POST /signin`
+  ```
+  body raw json:
+  {
+     "user_email": "test@test.com",
+     "user_password": "example_password"
+  }
+  ```
 
-## Features
+### user routes
+auth type: Bearer Token
+- `GET /user?email=`
+- `GET /user/{user_id}?current_user_id=`
+- `POST /user/update`
+  ```
+  body form-data
+  user_date: Text -> 
+  {
+     "user_id": "531210e0-faaf-4823-a653-3f2a14c084e5",
+     "name": "Name",
+     "bio": "Some text",
+     "avatar": null
+  }
+  image: File
+  ```
 
-Here's a list of features included in this project:
+### follows routes
+auth type: Bearer Token
+- `POST /follows/follow`
+  ```
+  body raw json:
+  {
+     "follower": "68d48f90-1ee2-424b-8463-2ddf7e8e76b5",
+     "following": "ebe5c631-76fd-44bf-b7fd-ba00ab7e80a8"
+  }
+  ```
+- `POST /follows/unfollow`
+  ```
+  body raw json:
+  {
+     "follower": "68d48f90-1ee2-424b-8463-2ddf7e8e76b5",
+     "following": "ebe5c631-76fd-44bf-b7fd-ba00ab7e80a8"
+  }
+  ```
+- `GET /follows/followers?user_id=&page_number=&page_size=`
+- `GET /follows/following?user_id=&page_number=&page_size=`
+- `GET /follows/suggestions?user_id=`
 
-| Name                                                                   | Description                                                                        |
-| ------------------------------------------------------------------------|------------------------------------------------------------------------------------ |
-| [Routing](https://start.ktor.io/p/routing)                             | Provides a structured routing DSL                                                  |
-| [kotlinx.serialization](https://start.ktor.io/p/kotlinx-serialization) | Handles JSON serialization using kotlinx.serialization library                     |
-| [Content Negotiation](https://start.ktor.io/p/content-negotiation)     | Provides automatic content conversion according to Content-Type and Accept headers |
-| [Postgres](https://start.ktor.io/p/postgres)                           | Adds Postgres database to your application                                         |
-| [Exposed](https://start.ktor.io/p/exposed)                             | Adds Exposed database to your application                                          |
-| [Authentication](https://start.ktor.io/p/auth)                         | Provides extension point for handling the Authorization header                     |
-| [Authentication JWT](https://start.ktor.io/p/auth-jwt)                 | Handles JSON Web Token (JWT) bearer authentication scheme                          |
+### posts routes
+auth type: Bearer Token
+- `POST /post/create`
+  ```
+  body form-data
+  post_data: Text -> 
+  {
+     "user_id": "5b2ce8a3-c9ce-4767-98ef-f642666c41a7",
+     "caption": "Some test text"
+  }
+  image: File
+  ```
+- `GET /post/{post_id}?user_id=`
+- `DELETE /post/{post_id}`
+- `GET /posts/feed?user_id=&page=&page_size=`
+- `GET /posts/{posts_owner_id}?user_id=&page=&page_size=`
 
-## Building & Running
+### post comments routes
+auth type: Bearer Token
+- `POST /post/comments/create`
+  ```
+  body raw json:
+  {
+     "post_id": "43b3db5b-1548-49e8-b8a6-fe9ff6220f83",
+     "user_id": "68d48f90-1ee2-424b-8463-2ddf7e8e76b5",
+     "content": "Some contents text"
+  }
+  ```
+- `DELETE /post/comments/delete/{comment_id}?user_id=&post_id=`
+- `GET /post/comments/{post_id}?page_number=&page_size=`
 
-To build or run the project, use one of the following tasks:
-
-| Task                          | Description                                                          |
-| -------------------------------|---------------------------------------------------------------------- |
-| `./gradlew test`              | Run the tests                                                        |
-| `./gradlew build`             | Build everything                                                     |
-| `buildFatJar`                 | Build an executable JAR of the server with all dependencies included |
-| `buildImage`                  | Build the docker image to use with the fat JAR                       |
-| `publishImageToLocalRegistry` | Publish the docker image locally                                     |
-| `run`                         | Run the server                                                       |
-| `runDocker`                   | Run using the local docker image                                     |
-
-If the server starts successfully, you'll see the following output:
-
-```
-2024-12-04 14:32:45.584 [main] INFO  Application - Application started in 0.303 seconds.
-2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
-```
-
+### post likes routes
+auth type: Bearer Token
+- `POST /post/likes/add`
+  ```
+  body raw json:
+  {
+     "post_id": "43b3db5b-1548-49e8-b8a6-fe9ff6220f83",
+     "user_id": "ebe5c631-76fd-44bf-b7fd-ba00ab7e80a8"
+  }
+  ```
+- `POST /post/likes/remove`
+  ```
+  body raw json:
+  {
+     "post_id": "43b3db5b-1548-49e8-b8a6-fe9ff6220f83",
+     "user_id": "ebe5c631-76fd-44bf-b7fd-ba00ab7e80a8"
+  }
+  ```

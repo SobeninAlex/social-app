@@ -140,7 +140,7 @@ fun Route.postsRoute(repository: PostRepository) {
         }
 
         route(path = "/posts") {
-            /** http://127.0.0.1:8080/posts/feed?user_id=&page=&page_size=& */
+            /** http://127.0.0.1:8080/posts/feed?user_id=&page=&page_size= */
             get(path = "/feed") {
                 val userId = call.request.queryParameters["user_id"] ?: run {
                     call.respond(
@@ -178,7 +178,7 @@ fun Route.postsRoute(repository: PostRepository) {
                 }
             }
 
-            /** http://127.0.0.1:8080/posts/{posts_owner_id}?user_id=&page=&page_size=& */
+            /** http://127.0.0.1:8080/posts/{posts_owner_id}?user_id=&page=&page_size= */
             get(path = "/{posts_owner_id}") {
                 val postsOwnerId = call.parameters["posts_owner_id"] ?: run {
                     call.respond(
