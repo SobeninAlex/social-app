@@ -131,32 +131,23 @@ class FollowersRepositoryImpl(
     override suspend fun getFollowingSuggestions(userId: String): Response<FollowsResponse> {
         val hasFollowing = followsDao.getFollowing(
             userId = userId,
-            pageNumber = 0,
-            pageSize = 1
-        ).isNotEmpty()
+            pageNumber = Constants.DEFAULT_PAGE,
+            pageSize = Constants.DEFAULT_PAGE_SIZE
+        )
 
-        return if (hasFollowing) {
-            Response.Error(
-                code = HttpStatusCode.Conflict,
-                data = FollowsResponse(
-                    isSuccess = false,
-                    errorMessage = "User has following!"
-                )
-            )
-        } else {
-            val suggestedFollowing = userDao
-                .getPopularUsers(limit = Constants.SUGGESTED_FOLLOWING_LIMIT)
-                .filterNot { it.userId == userId }
-                .map { it.toFollowUserData(isFollowing = false) }
+        val suggestedFollowing = userDao
+            .getPopularUsers(limit = Constants.SUGGESTED_FOLLOWING_LIMIT)
+            .filterNot { it.userId == userId }
+            .filterNot { hasFollowing.contains(it.userId) }
+            .map { it.toFollowUserData(isFollowing = hasFollowing.contains(it.userId)) }
 
-            Response.Success(
-                code = HttpStatusCode.OK,
-                data = FollowsResponse(
-                    isSuccess = true,
-                    follows = suggestedFollowing
-                )
+        return Response.Success(
+            code = HttpStatusCode.OK,
+            data = FollowsResponse(
+                isSuccess = true,
+                follows = suggestedFollowing
             )
-        }
+        )
     }
 
     private fun UserRow.toFollowUserData(isFollowing: Boolean): FollowUserData {

@@ -35,6 +35,7 @@ class PostDao {
                         joinType = JoinType.INNER
                     )
                     .selectAll()
+                    .where { PostTable.userId eq follows.first() }
                     .orderBy(column = PostTable.likesCount, order = SortOrder.DESC)
                     .limit(pageSize)
                     .offset(((pageNumber - 1) * pageSize).toLong())
