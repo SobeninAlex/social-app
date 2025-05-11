@@ -40,7 +40,7 @@ class FollowsDao {
                 .where { followingId eq userId }
                 .orderBy(followDate, SortOrder.DESC)
                 .limit(count = pageSize)
-                .offset(start = ((pageNumber - 1) * pageSize).toLong())
+                .offset(start = (pageNumber * pageSize).toLong())
                 .map { it[followerId] }
         }
     }
@@ -51,7 +51,7 @@ class FollowsDao {
                 .where { followerId eq userId }
                 .orderBy(followDate, SortOrder.DESC)
                 .limit(count = pageSize)
-                .offset(start = ((pageNumber - 1) * pageSize).toLong())
+                .offset(start = (pageNumber * pageSize).toLong())
                 .map { it[followingId] }
         }
     }

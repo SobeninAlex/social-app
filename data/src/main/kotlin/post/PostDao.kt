@@ -38,7 +38,7 @@ class PostDao {
                     .where { PostTable.userId eq follows.first() }
                     .orderBy(column = PostTable.likesCount, order = SortOrder.DESC)
                     .limit(pageSize)
-                    .offset(((pageNumber - 1) * pageSize).toLong())
+                    .offset((pageNumber * pageSize).toLong())
                     .map { it.toPostRow() }
             }
         }
@@ -124,7 +124,7 @@ class PostDao {
             .where { PostTable.userId inList userIDs }
             .orderBy(column = PostTable.likesCount, order = SortOrder.DESC)
             .limit(pageSize)
-            .offset(((pageNumber - 1) * pageSize).toLong())
+            .offset((pageNumber * pageSize).toLong())
             .map { it.toPostRow() }
     }
 
