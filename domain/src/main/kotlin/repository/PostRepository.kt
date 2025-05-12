@@ -11,7 +11,7 @@ interface PostRepository {
 
     suspend fun getFeedPosts(userId: String, pageNumber: Int, pageSize: Int): Response<PostsResponse>
 
-    suspend fun getPostsByUser(postsOwnerId: String, currentUserId: String, pageNumber: Int, pageSize: Int) : Response<PostsResponse>
+    suspend fun getPostsByUser(userId: String, currentUserId: String, pageNumber: Int, pageSize: Int) : Response<PostsResponse>
 
     suspend fun getPost(postId: String, userId: String): Response<PostResponse>
 

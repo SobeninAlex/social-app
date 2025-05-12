@@ -178,25 +178,25 @@ fun Route.postsRoute(repository: PostRepository) {
                 }
             }
 
-            /** http://127.0.0.1:8080/posts/{posts_owner_id}?user_id=&page=&page_size= */
-            get(path = "/{posts_owner_id}") {
-                val postsOwnerId = call.parameters["posts_owner_id"] ?: run {
+            /** http://127.0.0.1:8080/posts/{user_id}?current_user_id=&page=&page_size= */
+            get(path = "/{user_id}") {
+                val userId = call.parameters["user_id"] ?: run {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
                         message = SimpleResponse(
                             isSuccess = false,
-                            errorMessage = "parameter posts_owner_id is required"
+                            errorMessage = "parameter user_id is required"
                         )
                     )
                     return@get
                 }
 
-                val userId = call.request.queryParameters["user_id"] ?: run {
+                val currentUserId = call.request.queryParameters["current_user_id"] ?: run {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
                         message = SimpleResponse(
                             isSuccess = false,
-                            errorMessage = "query parameter user_id is required"
+                            errorMessage = "query parameter current_user_id is required"
                         )
                     )
                     return@get
@@ -207,8 +207,8 @@ fun Route.postsRoute(repository: PostRepository) {
 
                 runCatching {
                     repository.getPostsByUser(
-                        postsOwnerId = postsOwnerId,
-                        currentUserId = userId,
+                        userId = userId,
+                        currentUserId = currentUserId,
                         pageNumber = pageNumber,
                         pageSize = pageSize,
                     )

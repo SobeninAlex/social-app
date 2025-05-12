@@ -65,13 +65,13 @@ class PostRepositoryImpl(
     }
 
     override suspend fun getPostsByUser(
-        postsOwnerId: String,
+        userId: String,
         currentUserId: String,
         pageNumber: Int,
         pageSize: Int
     ): Response<PostsResponse> {
         val posts = postDao.getPostsByUserId(
-            userId = postsOwnerId,
+            userId = userId,
             pageNumber = pageNumber,
             pageSize = pageSize
         ).map { post ->
