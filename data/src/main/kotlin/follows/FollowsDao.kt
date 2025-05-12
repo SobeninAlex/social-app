@@ -38,9 +38,9 @@ class FollowsDao {
         return dbQuery {
             FollowsTable.selectAll()
                 .where { followingId eq userId }
-                .orderBy(followDate, SortOrder.DESC)
                 .limit(count = pageSize)
                 .offset(start = (pageNumber * pageSize).toLong())
+                .orderBy(followDate, SortOrder.DESC)
                 .map { it[followerId] }
         }
     }
@@ -49,9 +49,9 @@ class FollowsDao {
         return dbQuery {
             FollowsTable.selectAll()
                 .where { followerId eq userId }
-                .orderBy(followDate, SortOrder.DESC)
                 .limit(count = pageSize)
                 .offset(start = (pageNumber * pageSize).toLong())
+                .orderBy(followDate, SortOrder.DESC)
                 .map { it[followingId] }
         }
     }

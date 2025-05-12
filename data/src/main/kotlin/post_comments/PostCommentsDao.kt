@@ -67,9 +67,9 @@ class PostCommentsDao {
                 )
                 .selectAll()
                 .where { PostCommentsTable.postId eq postId }
-                .orderBy(column = PostCommentsTable.createdAt, order = SortOrder.DESC)
                 .limit(pageSize)
                 .offset((pageNumber * pageSize).toLong())
+                .orderBy(column = PostCommentsTable.createdAt, order = SortOrder.DESC)
                 .map { it.toPostCommentsRow() }
         }
     }

@@ -36,9 +36,9 @@ class PostDao {
                     )
                     .selectAll()
                     .where { PostTable.userId eq follows.first() }
-                    .orderBy(column = PostTable.likesCount, order = SortOrder.DESC)
                     .limit(pageSize)
                     .offset((pageNumber * pageSize).toLong())
+                    .orderBy(column = PostTable.createdAt, order = SortOrder.DESC)
                     .map { it.toPostRow() }
             }
         }
@@ -122,9 +122,9 @@ class PostDao {
             )
             .selectAll()
             .where { PostTable.userId inList userIDs }
-            .orderBy(column = PostTable.likesCount, order = SortOrder.DESC)
             .limit(pageSize)
             .offset((pageNumber * pageSize).toLong())
+            .orderBy(column = PostTable.createdAt, order = SortOrder.DESC)
             .map { it.toPostRow() }
     }
 
