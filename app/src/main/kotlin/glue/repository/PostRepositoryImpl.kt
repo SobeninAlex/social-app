@@ -90,12 +90,12 @@ class PostRepositoryImpl(
         )
     }
 
-    override suspend fun getPost(postId: String, userId: String): Response<PostResponse> {
-        val postRow = postDao.getPost(postId = postId, userId = userId)
+    override suspend fun getPost(postId: String, currentUserId: String): Response<PostResponse> {
+        val postRow = postDao.getPost(postId = postId, userId = currentUserId)
 
         return if (postRow != null) {
-            val isPostLiked = postLikeDao.isPostLikedByUser(postId = postId, userId = userId)
-            val isOwnPost = postRow.userId == userId
+            val isPostLiked = postLikeDao.isPostLikedByUser(postId = postId, userId = currentUserId)
+            val isOwnPost = postRow.userId == currentUserId
             Response.Success(
                 code = HttpStatusCode.OK,
                 data = PostResponse(

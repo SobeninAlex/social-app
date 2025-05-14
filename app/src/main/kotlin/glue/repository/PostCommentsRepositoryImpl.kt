@@ -7,6 +7,7 @@ import io.ktor.http.*
 import model.request.NewCommentRequest
 import model.response.CommentResponse
 import model.response.ListCommentResponse
+import model.response.SimpleResponse
 import post.PostDao
 import post_comments.PostCommentsDao
 import repository.PostCommentsRepository
@@ -47,7 +48,7 @@ class PostCommentsRepositoryImpl(
         commentId: String,
         postId: String,
         userId: String
-    ): Response<CommentResponse> {
+    ): Response<SimpleResponse> {
         val commentRow = postCommentsDao.findComment(
             commentId = commentId,
             postId = postId
@@ -56,7 +57,7 @@ class PostCommentsRepositoryImpl(
         if (commentRow == null) {
             return Response.Error(
                 code = HttpStatusCode.NotFound,
-                data = CommentResponse(
+                data = SimpleResponse(
                     isSuccess = false,
                     errorMessage = "Comment not found"
                 )
@@ -68,7 +69,7 @@ class PostCommentsRepositoryImpl(
         if (userId != commentRow.userId && userId != postOwnerId) {
             return Response.Error(
                 code = HttpStatusCode.Forbidden,
-                data = CommentResponse(
+                data = SimpleResponse(
                     isSuccess = false,
                     errorMessage = "User $userId cannot delete comment $commentId"
                 )
@@ -84,12 +85,12 @@ class PostCommentsRepositoryImpl(
             postDao.updateCommentsCount(postId = postId, decrement = true)
             Response.Success(
                 code = HttpStatusCode.Created,
-                data = CommentResponse(isSuccess = true)
+                data = SimpleResponse(isSuccess = true)
             )
         } else {
             Response.Error(
                 code = HttpStatusCode.Conflict,
-                data = CommentResponse(
+                data = SimpleResponse(
                     isSuccess = false,
                     errorMessage = ErrorMessage.SOMETHING_WRONG
                 )

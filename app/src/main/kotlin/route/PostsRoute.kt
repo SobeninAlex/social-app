@@ -70,7 +70,7 @@ fun Route.postsRoute(repository: PostRepository) {
                 }
             }
 
-            /** http://127.0.0.1:8080/post/{post_id}?user_id= */
+            /** http://127.0.0.1:8080/post/{post_id}?current_user_id= */
             get(path = "/{post_id}") {
                 val postId = call.parameters["post_id"] ?: run {
                     call.respond(
@@ -83,13 +83,13 @@ fun Route.postsRoute(repository: PostRepository) {
                     return@get
                 }
 
-                val userId = call.request.queryParameters["user_id"]
+                val userId = call.request.queryParameters["current_user_id"]
 
                 runCatching {
                     if (userId == null) {
                         repository.getPost(postId = postId)
                     } else {
-                        repository.getPost(postId = postId, userId = userId)
+                        repository.getPost(postId = postId, currentUserId = userId)
                     }
                 }.onSuccess { response ->
                     call.respond(
