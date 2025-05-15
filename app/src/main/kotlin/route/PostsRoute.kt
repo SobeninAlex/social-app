@@ -83,13 +83,13 @@ fun Route.postsRoute(repository: PostRepository) {
                     return@get
                 }
 
-                val userId = call.request.queryParameters["current_user_id"]
+                val userId = call.request.queryParameters["user_id"]
 
                 runCatching {
                     if (userId == null) {
                         repository.getPost(postId = postId)
                     } else {
-                        repository.getPost(postId = postId, currentUserId = userId)
+                        repository.getPost(postId = postId, userId = userId)
                     }
                 }.onSuccess { response ->
                     call.respond(

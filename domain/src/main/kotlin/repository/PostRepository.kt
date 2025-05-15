@@ -13,7 +13,7 @@ interface PostRepository {
 
     suspend fun getPostsByUser(userId: String, currentUserId: String, pageNumber: Int, pageSize: Int) : Response<PostsResponse>
 
-    suspend fun getPost(postId: String, currentUserId: String): Response<PostResponse>
+    suspend fun getPost(postId: String, userId: String): Response<PostResponse>
 
     suspend fun getPost(postId: String): Response<PostResponse>
 
