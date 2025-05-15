@@ -114,28 +114,6 @@ class PostRepositoryImpl(
         }
     }
 
-    override suspend fun getPost(postId: String): Response<PostResponse> {
-        val postRow = postDao.getPost(postId = postId)
-
-        return if (postRow != null) {
-            Response.Success(
-                code = HttpStatusCode.OK,
-                data = PostResponse(
-                    isSuccess = true,
-                    post = postRow.toPost(isLiked = null, isOwnPost = null)
-                )
-            )
-        } else {
-            Response.Error(
-                code = HttpStatusCode.NotFound,
-                data = PostResponse(
-                    isSuccess = false,
-                    errorMessage = ErrorMessage.POST_NOT_FOUND
-                )
-            )
-        }
-    }
-
     override suspend fun deletePost(postId: String): Response<PostResponse> {
         val postIsDeleted = postDao.deletePost(postId = postId)
         return if (postIsDeleted) {

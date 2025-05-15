@@ -80,7 +80,6 @@ class PostDao {
                 .where { (PostTable.postId eq postId)}
                 .map { it.toPostRow() }
                 .singleOrNull()
-
         }
     }
 

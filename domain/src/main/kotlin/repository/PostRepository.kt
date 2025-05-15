@@ -15,7 +15,5 @@ interface PostRepository {
 
     suspend fun getPost(postId: String, userId: String): Response<PostResponse>
 
-    suspend fun getPost(postId: String): Response<PostResponse>
-
     suspend fun deletePost(postId: String): Response<PostResponse>
 }
