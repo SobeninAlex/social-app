@@ -10,9 +10,9 @@ interface FollowersRepository {
 
     suspend fun unfollowUser(follower: String, following: String): Response<SimpleResponse>
 
-    suspend fun getFollowers(userId: String, pageNumber: Int, pageSize: Int): Response<FollowsResponse>
+    suspend fun getFollowers(userId: String, page: Int, pageSize: Int): Response<FollowsResponse>
 
-    suspend fun getFollowing(userId: String, pageNumber: Int, pageSize: Int): Response<FollowsResponse>
+    suspend fun getFollowing(userId: String, page: Int, pageSize: Int): Response<FollowsResponse>
 
     suspend fun getFollowingSuggestions(userId: String): Response<FollowsResponse>
 }

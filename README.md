@@ -67,8 +67,8 @@ auth type: Bearer Token
      "following": "ebe5c631-76fd-44bf-b7fd-ba00ab7e80a8"
   }
   ```
-- `GET /follows/followers?user_id=&page_number=&page_size=`
-- `GET /follows/following?user_id=&page_number=&page_size=`
+- `GET /follows/followers?user_id=&page=&page_size=`
+- `GET /follows/following?user_id=&page=&page_size=`
 - `GET /follows/suggestions?user_id=`
 
 ### posts routes
@@ -100,7 +100,7 @@ auth type: Bearer Token
   }
   ```
 - `DELETE /post/comments/delete/{comment_id}?user_id=&post_id=`
-- `GET /post/comments/{post_id}?page_number=&page_size=`
+- `GET /post/comments/{post_id}?page=&page_size=`
 
 ### post likes routes
 auth type: Bearer Token

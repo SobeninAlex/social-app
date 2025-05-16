@@ -34,23 +34,23 @@ class FollowsDao {
         }
     }
 
-    suspend fun getFollowers(userId: String, pageNumber: Int, pageSize: Int): List<String> {
+    suspend fun getFollowers(userId: String, page: Int, pageSize: Int): List<String> {
         return dbQuery {
             FollowsTable.selectAll()
                 .where { followingId eq userId }
                 .limit(count = pageSize)
-                .offset(start = (pageNumber * pageSize).toLong())
+                .offset(start = (page * pageSize).toLong())
                 .orderBy(followDate, SortOrder.DESC)
                 .map { it[followerId] }
         }
     }
 
-    suspend fun getFollowing(userId: String, pageNumber: Int, pageSize: Int): List<String> {
+    suspend fun getFollowing(userId: String, page: Int, pageSize: Int): List<String> {
         return dbQuery {
             FollowsTable.selectAll()
                 .where { followerId eq userId }
                 .limit(count = pageSize)
-                .offset(start = (pageNumber * pageSize).toLong())
+                .offset(start = (page * pageSize).toLong())
                 .orderBy(followDate, SortOrder.DESC)
                 .map { it[followingId] }
         }

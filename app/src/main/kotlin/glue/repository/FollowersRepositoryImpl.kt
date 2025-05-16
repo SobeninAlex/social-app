@@ -19,12 +19,12 @@ class FollowersRepositoryImpl(
 
     override suspend fun getFollowers(
         userId: String,
-        pageNumber: Int,
+        page: Int,
         pageSize: Int
     ): Response<FollowsResponse> {
         val followerIDs = followsDao.getFollowers(
             userId = userId,
-            pageNumber = pageNumber,
+            page = page,
             pageSize = pageSize
         )
 
@@ -46,12 +46,12 @@ class FollowersRepositoryImpl(
 
     override suspend fun getFollowing(
         userId: String,
-        pageNumber: Int,
+        page: Int,
         pageSize: Int
     ): Response<FollowsResponse> {
         val followingIDs = followsDao.getFollowing(
             userId = userId,
-            pageNumber = pageNumber,
+            page = page,
             pageSize = pageSize
         )
 
@@ -131,7 +131,7 @@ class FollowersRepositoryImpl(
     override suspend fun getFollowingSuggestions(userId: String): Response<FollowsResponse> {
         val hasFollowing = followsDao.getFollowing(
             userId = userId,
-            pageNumber = Constants.DEFAULT_PAGE,
+            page = Constants.DEFAULT_PAGE,
             pageSize = Constants.DEFAULT_PAGE_SIZE
         )
 

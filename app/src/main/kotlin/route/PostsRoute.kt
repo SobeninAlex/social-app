@@ -70,7 +70,7 @@ fun Route.postsRoute(repository: PostRepository) {
                 }
             }
 
-            /** http://127.0.0.1:8080/post/{post_id}?current_user_id= */
+            /** http://127.0.0.1:8080/post/{post_id}?currentUserId= */
             get(path = "/{post_id}") {
                 val postId = call.parameters["post_id"] ?: run {
                     call.respond(
@@ -83,19 +83,19 @@ fun Route.postsRoute(repository: PostRepository) {
                     return@get
                 }
 
-                val userId = call.request.queryParameters["user_id"] ?: run {
+                val currentUserId = call.request.queryParameters["current_user_id"] ?: run {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
                         message = SimpleResponse(
                             isSuccess = false,
-                            errorMessage = "parameter user_id is required"
+                            errorMessage = "parameter current_user_id is required"
                         )
                     )
                     return@get
                 }
 
                 runCatching {
-                    repository.getPost(postId = postId, userId = userId)
+                    repository.getPost(postId = postId, currentUserId = currentUserId)
                 }.onSuccess { response ->
                     call.respond(
                         status = response.code,
@@ -158,13 +158,13 @@ fun Route.postsRoute(repository: PostRepository) {
                     return@get
                 }
 
-                val pageNumber = call.request.queryParameters["page"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE
+                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE
                 val pageSize = call.request.queryParameters["page_size"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE_SIZE
 
                 runCatching {
                     repository.getFeedPosts(
                         userId = userId,
-                        pageNumber = pageNumber,
+                        page = page,
                         pageSize = pageSize,
                     )
                 }.onSuccess { response ->
@@ -207,14 +207,14 @@ fun Route.postsRoute(repository: PostRepository) {
                     return@get
                 }
 
-                val pageNumber = call.request.queryParameters["page"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE
+                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE
                 val pageSize = call.request.queryParameters["page_size"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE_SIZE
 
                 runCatching {
                     repository.getPostsByUser(
                         userId = userId,
                         currentUserId = currentUserId,
-                        pageNumber = pageNumber,
+                        page = page,
                         pageSize = pageSize,
                     )
                 }.onSuccess { response ->

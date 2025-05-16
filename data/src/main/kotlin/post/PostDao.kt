@@ -22,10 +22,10 @@ class PostDao {
         }
     }
 
-    suspend fun getFeedPosts(follows: List<String>, pageNumber: Int, pageSize: Int): List<PostRow> {
+    suspend fun getFeedPosts(follows: List<String>, page: Int, pageSize: Int): List<PostRow> {
         return dbQuery {
             if (follows.size > 1) {
-                getPosts(userIDs = follows, pageNumber = pageNumber, pageSize = pageSize)
+                getPosts(userIDs = follows, page = page, pageSize = pageSize)
             } else {
                 PostTable
                     .join(
@@ -37,16 +37,16 @@ class PostDao {
                     .selectAll()
                     .where { PostTable.userId eq follows.first() }
                     .limit(pageSize)
-                    .offset((pageNumber * pageSize).toLong())
+                    .offset((page * pageSize).toLong())
                     .orderBy(column = PostTable.createdAt, order = SortOrder.DESC)
                     .map { it.toPostRow() }
             }
         }
     }
 
-    suspend fun getPostsByUserId(userId: String, pageNumber: Int, pageSize: Int): List<PostRow> {
+    suspend fun getPostsByUserId(userId: String, page: Int, pageSize: Int): List<PostRow> {
         return dbQuery {
-            getPosts(userIDs = listOf(userId), pageNumber = pageNumber, pageSize = pageSize)
+            getPosts(userIDs = listOf(userId), page = page, pageSize = pageSize)
         }
     }
 
@@ -111,7 +111,7 @@ class PostDao {
         }
     }
 
-    private fun getPosts(userIDs: List<String>, pageNumber: Int, pageSize: Int): List<PostRow> {
+    private fun getPosts(userIDs: List<String>, page: Int, pageSize: Int): List<PostRow> {
         return PostTable
             .join(
                 otherTable = UserTable,
@@ -122,7 +122,7 @@ class PostDao {
             .selectAll()
             .where { PostTable.userId inList userIDs }
             .limit(pageSize)
-            .offset((pageNumber * pageSize).toLong())
+            .offset((page * pageSize).toLong())
             .orderBy(column = PostTable.createdAt, order = SortOrder.DESC)
             .map { it.toPostRow() }
     }

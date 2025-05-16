@@ -9,11 +9,11 @@ interface PostRepository {
 
     suspend fun createPost(imageUrl: String, postTextRequest: PostTextRequest): Response<PostResponse>
 
-    suspend fun getFeedPosts(userId: String, pageNumber: Int, pageSize: Int): Response<PostsResponse>
+    suspend fun getFeedPosts(userId: String, page: Int, pageSize: Int): Response<PostsResponse>
 
-    suspend fun getPostsByUser(userId: String, currentUserId: String, pageNumber: Int, pageSize: Int) : Response<PostsResponse>
+    suspend fun getPostsByUser(userId: String, currentUserId: String, page: Int, pageSize: Int) : Response<PostsResponse>
 
-    suspend fun getPost(postId: String, userId: String): Response<PostResponse>
+    suspend fun getPost(postId: String, currentUserId: String): Response<PostResponse>
 
     suspend fun deletePost(postId: String): Response<PostResponse>
 }

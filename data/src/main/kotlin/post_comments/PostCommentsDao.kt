@@ -56,7 +56,7 @@ class PostCommentsDao {
         }
     }
 
-    suspend fun getComments(postId: String, pageNumber: Int, pageSize: Int): List<PostCommentsRow> {
+    suspend fun getComments(postId: String, page: Int, pageSize: Int): List<PostCommentsRow> {
         return dbQuery {
             PostCommentsTable
                 .join(
@@ -68,7 +68,7 @@ class PostCommentsDao {
                 .selectAll()
                 .where { PostCommentsTable.postId eq postId }
                 .limit(pageSize)
-                .offset((pageNumber * pageSize).toLong())
+                .offset((page * pageSize).toLong())
                 .orderBy(column = PostCommentsTable.createdAt, order = SortOrder.DESC)
                 .map { it.toPostCommentsRow() }
         }

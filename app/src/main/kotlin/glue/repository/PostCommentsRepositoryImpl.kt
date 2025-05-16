@@ -100,12 +100,12 @@ class PostCommentsRepositoryImpl(
 
     override suspend fun getPostComments(
         postId: String,
-        pageNumber: Int,
+        page: Int,
         pageSize: Int
     ): Response<ListCommentResponse> {
         val comments = postCommentsDao.getComments(
             postId = postId,
-            pageNumber = pageNumber,
+            page = page,
             pageSize = pageSize
         ).map { it.toPostComment() }
 

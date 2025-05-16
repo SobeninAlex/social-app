@@ -75,7 +75,7 @@ fun Route.followsRouting(repository: FollowersRepository) {
                 }
             }
 
-            /** http://127.0.0.1:8080/follows/followers?user_id=&page_number=&page_size= */
+            /** http://127.0.0.1:8080/follows/followers?user_id=&page=&page_size= */
             get(path = "/followers") {
                 val userId = call.request.queryParameters["user_id"] ?: run {
                     call.respond(
@@ -88,13 +88,13 @@ fun Route.followsRouting(repository: FollowersRepository) {
                     return@get
                 }
 
-                val pageNumber = call.request.queryParameters["page_number"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE
+                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE
                 val pageSize = call.request.queryParameters["page_size"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE_SIZE
 
                 runCatching {
                     repository.getFollowers(
                         userId = userId,
-                        pageNumber = pageNumber,
+                        page = page,
                         pageSize = pageSize
                     )
                 }.onSuccess { response ->
@@ -113,7 +113,7 @@ fun Route.followsRouting(repository: FollowersRepository) {
                 }
             }
 
-            /** http://127.0.0.1:8080/follows/following?user_id=&page_number=&page_size= */
+            /** http://127.0.0.1:8080/follows/following?user_id=&page=&page_size= */
             get(path = "/following") {
                 val userId = call.request.queryParameters["user_id"] ?: run {
                     call.respond(
@@ -126,13 +126,13 @@ fun Route.followsRouting(repository: FollowersRepository) {
                     return@get
                 }
 
-                val pageNumber = call.request.queryParameters["page_number"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE
+                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE
                 val pageSize = call.request.queryParameters["page_size"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE_SIZE
 
                 runCatching {
                     repository.getFollowing(
                         userId = userId,
-                        pageNumber = pageNumber,
+                        page = page,
                         pageSize = pageSize
                     )
                 }.onSuccess { response ->

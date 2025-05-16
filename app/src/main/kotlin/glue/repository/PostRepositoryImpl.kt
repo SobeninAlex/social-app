@@ -40,13 +40,13 @@ class PostRepositoryImpl(
         }
     }
 
-    override suspend fun getFeedPosts(userId: String, pageNumber: Int, pageSize: Int): Response<PostsResponse> {
+    override suspend fun getFeedPosts(userId: String, page: Int, pageSize: Int): Response<PostsResponse> {
         val followingUsers = followsDao.getAllFollowing(userId = userId).toMutableList()
         followingUsers.add(userId)
 
         val posts = postDao.getFeedPosts(
             follows = followingUsers,
-            pageNumber = pageNumber,
+            page = page,
             pageSize = pageSize
         ).map { post ->
             post.toPost(
@@ -67,12 +67,12 @@ class PostRepositoryImpl(
     override suspend fun getPostsByUser(
         userId: String,
         currentUserId: String,
-        pageNumber: Int,
+        page: Int,
         pageSize: Int
     ): Response<PostsResponse> {
         val posts = postDao.getPostsByUserId(
             userId = userId,
-            pageNumber = pageNumber,
+            page = page,
             pageSize = pageSize
         ).map { post ->
             post.toPost(
@@ -90,12 +90,12 @@ class PostRepositoryImpl(
         )
     }
 
-    override suspend fun getPost(postId: String, userId: String): Response<PostResponse> {
-        val postRow = postDao.getPost(postId = postId, userId = userId)
+    override suspend fun getPost(postId: String, currentUserId: String): Response<PostResponse> {
+        val postRow = postDao.getPost(postId = postId)
 
         return if (postRow != null) {
-            val isPostLiked = postLikeDao.isPostLikedByUser(postId = postId, userId = userId)
-            val isOwnPost = postRow.userId == userId
+            val isPostLiked = postLikeDao.isPostLikedByUser(postId = postId, userId = currentUserId)
+            val isOwnPost = postRow.userId == currentUserId
             Response.Success(
                 code = HttpStatusCode.OK,
                 data = PostResponse(
