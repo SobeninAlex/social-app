@@ -9,8 +9,12 @@ import java.util.*
 
 class PostDao {
 
-    suspend fun createPost(caption: String, imageUrl: String, userId: String): Boolean {
+    suspend fun createPost(caption: String, imageUrl: String, userId: String): PostRow? {
         return dbQuery {
+            val user = UserTable.selectAll()
+                .where { UserTable.userId eq userId }
+                .first()
+
             PostTable.insert {
                 it[this.postId] = UUID.randomUUID().toString()
                 it[this.caption] = caption
@@ -18,7 +22,11 @@ class PostDao {
                 it[this.userId] = userId
             }
                 .resultedValues
-                ?.singleOrNull() != null
+                ?.singleOrNull()
+                ?.toNewPostRow(
+                    userName = user[UserTable.userName],
+                    userAvatar = user[UserTable.userAvatar],
+                )
         }
     }
 
@@ -138,6 +146,20 @@ class PostDao {
             userId = this[PostTable.userId],
             userName = this[UserTable.userName],
             userAvatar = this[UserTable.userAvatar],
+        )
+    }
+
+    private fun ResultRow.toNewPostRow(userName: String, userAvatar: String?): PostRow {
+        return PostRow(
+            postId = this[PostTable.postId],
+            caption = this[PostTable.caption],
+            imageUrl = this[PostTable.imageUrl],
+            createdAt = this[PostTable.createdAt].toString(),
+            likesCount = this[PostTable.likesCount],
+            commentsCount = this[PostTable.commentsCount],
+            userId = this[PostTable.userId],
+            userName = userName,
+            userAvatar = userAvatar,
         )
     }
 }
