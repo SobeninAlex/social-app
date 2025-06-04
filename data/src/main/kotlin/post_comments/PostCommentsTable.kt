@@ -11,7 +11,7 @@ internal object PostCommentsTable : Table(name = "post_comments") {
 
     val commentId = text(name = "comment_id").uniqueIndex()
     val postId = text(name = "post_id").references(ref = PostTable.postId, onDelete = ReferenceOption.CASCADE)
-    val userId = text(name = "user_id").references(ref = UserTable.userId, ReferenceOption.CASCADE)
+    val userId = text(name = "user_id").references(ref = UserTable.userId, onDelete = ReferenceOption.CASCADE)
     val content = varchar(name = "content", length = 500)
     val createdAt = datetime(name = "created_at").defaultExpression(defaultValue = CurrentDateTime)
 }
