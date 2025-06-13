@@ -5,6 +5,7 @@ import ErrorMessage
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.auth.*
+import io.ktor.server.http.content.files
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -20,14 +21,15 @@ fun Route.postsRoute(repository: PostRepository) {
         route(path = "/post") {
             /** http://127.0.0.1:8080/post/create */
             post(path = "/create") {
-                var fileName = ""
+                val filesUrls = mutableListOf<String>()
                 var postTextRequest: PostTextRequest? = null
                 val multipart = call.receiveMultipart()
 
                 multipart.forEachPart { part ->
                     when (part) {
                         is PartData.FileItem -> {
-                            fileName = part.saveFile(folderPath = Paths.POST_IMAGES_FOLDER_PATH)
+                            val fileName = part.saveFile(folderPath = Paths.POST_IMAGES_FOLDER_PATH)
+                            filesUrls.add("${Constants.BASE_URL}${Paths.POST_IMAGES_FOLDER}$fileName")
                         }
 
                         is PartData.FormItem -> {
@@ -41,10 +43,12 @@ fun Route.postsRoute(repository: PostRepository) {
                     part.dispose()
                 }
 
-                val imageUrl = "${Constants.BASE_URL}${Paths.POST_IMAGES_FOLDER}$fileName"
+//                val imageUrl = "${Constants.BASE_URL}${Paths.POST_IMAGES_FOLDER}$fileName"
 
                 if (postTextRequest == null) {
-                    File("${Paths.POST_IMAGES_FOLDER_PATH}/$fileName").delete()
+                    filesUrls.forEach { fileName ->
+                        File("${Paths.POST_IMAGES_FOLDER_PATH}/$fileName").delete()
+                    }
 
                     call.respond(
                         status = HttpStatusCode.BadRequest,
@@ -52,7 +56,7 @@ fun Route.postsRoute(repository: PostRepository) {
                     )
                 } else {
                      try {
-                         val result = repository.createPost(imageUrl, postTextRequest!!)
+                         val result = repository.createPost(filesUrls, postTextRequest!!)
 
                          call.respond(
                              status = result.code,

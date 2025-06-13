@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class Post(
     @SerialName("post_id") val postId: String,
     @SerialName("caption") val caption: String,
-    @SerialName("image_url") val imageUrl: String,
+    @SerialName("image_urls") val imageUrls: List<String>,
     @SerialName("likes_count") val likesCount: Int,
     @SerialName("comments_count") val commentsCount: Int,
     @SerialName("user_id") val userId: String,

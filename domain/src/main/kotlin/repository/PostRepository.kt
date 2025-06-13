@@ -7,7 +7,7 @@ import model.response.PostsResponse
 
 interface PostRepository {
 
-    suspend fun createPost(imageUrl: String, postTextRequest: PostTextRequest): Response<PostResponse>
+    suspend fun createPost(imageUrls: List<String>, postTextRequest: PostTextRequest): Response<PostResponse>
 
     suspend fun getFeedPosts(userId: String, page: Int, pageSize: Int): Response<PostsResponse>
 
