@@ -103,7 +103,7 @@ fun Route.postCommentsRoute(repository: PostCommentsRepository) {
 
             /** http://127.0.0.1:8080/post/comments/{post_id}?page=&page_size= */
             get(path = "/{post_id}") {
-                val postId = call.parameters["post_id"] ?: run {
+                val postId = call.pathParameters["post_id"] ?: run {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
                         message = SimpleResponse(
@@ -114,8 +114,8 @@ fun Route.postCommentsRoute(repository: PostCommentsRepository) {
                     return@get
                 }
 
-                val page = call.request.queryParameters["page"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE
-                val pageSize = call.request.queryParameters["page_size"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE_SIZE
+                val page = call.queryParameters["page"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE
+                val pageSize = call.queryParameters["page_size"]?.toIntOrNull() ?: Constants.DEFAULT_PAGE_SIZE
 
                 runCatching {
                     repository.getPostComments(
