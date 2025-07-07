@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import glue.di.configureKoin
+import plugins.configureSwagger
 
 fun main() {
     embeddedServer(
@@ -20,5 +21,6 @@ fun Application.module() {
     DatabaseFactory.initDatabase()
     configureSerialization()
     configureSecurity()
+    configureSwagger()
     configureRouting()
 }

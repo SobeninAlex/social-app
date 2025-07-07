@@ -22,7 +22,6 @@ fun Application.configureRouting() {
         postsRoute(postRepository)
         postCommentsRoute(postCommentsRepository)
         postLikesRoute(postLikesRepository)
-
         staticResources("/", "static")
     }
 }

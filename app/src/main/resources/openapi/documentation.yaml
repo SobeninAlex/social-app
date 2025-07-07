@@ -1,0 +1,26 @@
+openapi: 3.0.0
+
+info:
+  title: social-app-server
+  version: 1.0.0
+  description: API documentation
+
+servers:
+  - url: http://localhost:8080
+    description: Local dev server
+
+tags:
+  - name: Authentication
+    description: Authentication routs
+  - name: Follows
+    description: Follow and Unfollow routes
+  - name: PostComments
+    description: Comments routs
+  - name: PostLike
+    description: Like or Unlike routs
+  - name: Post
+    description: Post routes
+  - name: User
+    description: User routes
+
+paths:
