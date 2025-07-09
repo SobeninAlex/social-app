@@ -23,4 +23,167 @@ tags:
   - name: User
     description: User routes
 
+components:
+  schemas:
+    SingUpRequest:
+      type: object
+      required:
+        - user_name
+        - user_email
+        - user_password
+      properties:
+        user_name:
+          type: string
+          example: John Doe
+        user_email:
+          type: string
+          format: email
+          example: user@example.com
+        user_password:
+          type: string
+          format: password
+          example: password123
+
+    SingInRequest:
+      type: object
+      required:
+        - user_email
+        - user_password
+      properties:
+        user_email:
+          type: string
+          format: email
+          example: user@example.com
+        user_password:
+          type: string
+          format: password
+          example: password123
+
+    AuthResponse:
+      type: object
+      properties:
+        auth_data:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+              format: text
+            bio:
+              type: string
+              format: text
+            avatar:
+              type: string
+              format: text
+              nullable: false
+            token:
+              type: string
+              format: jwt
+            followers_count:
+              type: integer
+            following_count:
+              type: integer
+        error_message:
+          type: string
+          nullable: true
+
+    InfoUserResponse:
+      type: object
+      properties:
+        is_success:
+          type: boolean
+        error_message:
+          type: string
+          nullable: true
+        user:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+              format: text
+            bio:
+              type: string
+              format: text
+            avatar:
+              type: string
+              format: text
+              nullable: false
+            followers_count:
+              type: integer
+            following_count:
+              type: integer
+            is_following:
+              type: boolean
+              nullable: true
+            is_own_profile:
+              type: boolean
+              nullable: true
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+
 paths:
+  /signup:
+    post:
+      summary: Register new user
+      tags: [ Authentication ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SingUpRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  /signin:
+    post:
+      summary: Login user
+      tags: [ Authentication ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SingInRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  /user:
+    get:
+      summary: get user info by email
+      tags: [ User ]
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: email
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoUserResponse'
