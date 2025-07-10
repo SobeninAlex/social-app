@@ -1,189 +1,525 @@
 openapi: 3.0.0
 
 info:
-  title: social-app-server
-  version: 1.0.0
-  description: API documentation
+   title: social-app-server
+   version: 1.0.0
+   description: API documentation
 
 servers:
-  - url: http://localhost:8080
-    description: Local dev server
+   -  url: http://localhost:8080
+      description: Local dev server
 
 tags:
-  - name: Authentication
-    description: Authentication routs
-  - name: Follows
-    description: Follow and Unfollow routes
-  - name: PostComments
-    description: Comments routs
-  - name: PostLike
-    description: Like or Unlike routs
-  - name: Post
-    description: Post routes
-  - name: User
-    description: User routes
+   -  name: Authentication
+      description: Authentication routs
+   -  name: Follows
+      description: Follow and Unfollow routes
+   -  name: PostComments
+      description: Comments routs
+   -  name: PostLike
+      description: Like or Unlike routs
+   -  name: Post
+      description: Post routes
+   -  name: User
+      description: User routes
 
 components:
-  schemas:
-    SingUpRequest:
-      type: object
-      required:
-        - user_name
-        - user_email
-        - user_password
-      properties:
-        user_name:
-          type: string
-          example: John Doe
-        user_email:
-          type: string
-          format: email
-          example: user@example.com
-        user_password:
-          type: string
-          format: password
-          example: password123
+   schemas:
+      SingUpRequest:
+         type: object
+         required:
+            - user_name
+            - user_email
+            - user_password
+         properties:
+            user_name:
+               type: string
+               example: John Doe
+            user_email:
+               type: string
+               format: email
+               example: user@example.com
+            user_password:
+               type: string
+               format: password
+               example: password123
 
-    SingInRequest:
-      type: object
-      required:
-        - user_email
-        - user_password
-      properties:
-        user_email:
-          type: string
-          format: email
-          example: user@example.com
-        user_password:
-          type: string
-          format: password
-          example: password123
+      SingInRequest:
+         type: object
+         required:
+            - user_email
+            - user_password
+         properties:
+            user_email:
+               type: string
+               format: email
+               example: user@example.com
+            user_password:
+               type: string
+               format: password
+               example: password123
 
-    AuthResponse:
-      type: object
-      properties:
-        auth_data:
-          type: object
-          nullable: true
-          properties:
-            id:
-              type: string
-              format: uuid
+      AuthResponse:
+         type: object
+         properties:
+            auth_data:
+               type: object
+               nullable: true
+               properties:
+                  id:
+                     type: string
+                     format: uuid
+                  name:
+                     type: string
+                     format: text
+                     example: Bustusha
+                  bio:
+                     type: string
+                     format: text
+                     example: I am Bustusha
+                  avatar:
+                     type: string
+                     format: text
+                     nullable: true
+                     example: http://127.0.0.1:8080/user_images/8f1a50c9-62e5-44d8-b076-74f85d759975.jpg
+                  token:
+                     type: string
+                     format: jwt
+                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ1c2VycyIsImlzcyI6ImV4YW1wbGUuY29tIiwiZW1haWwiOiJrdXJhbWFAZ21haWwuY29tIiwiZXhwIjoxNzUyMjY0NzA2fQ.ZzRdRt8QhvIDNJGx9NatJHRfIGO8qVPFEaNFhHvwN_A
+                  followers_count:
+                     type: integer
+                     example: 0
+                  following_count:
+                     type: integer
+                     example: 0
+            error_message:
+               type: string
+               nullable: true
+               example: Oh, something went wrong!
+
+      InfoUserResponse:
+         type: object
+         properties:
+            is_success:
+               type: boolean
+               example: true
+            user:
+               type: object
+               nullable: true
+               properties:
+                  id:
+                     type: string
+                     format: uuid
+                     example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+                  name:
+                     type: string
+                     format: text
+                     example: Bustusha
+                  bio:
+                     type: string
+                     format: text
+                     example: I am Bustusha
+                  avatar:
+                     type: string
+                     format: text
+                     nullable: true
+                     example: http://127.0.0.1:8080/user_images/8f1a50c9-62e5-44d8-b076-74f85d759975.jpg
+                  followers_count:
+                     type: integer
+                     example: 0
+                  following_count:
+                     type: integer
+                     example: 0
+                  is_following:
+                     type: boolean
+                     nullable: true
+                     example: true
+                  is_own_profile:
+                     type: boolean
+                     nullable: true
+                     example: true
+            error_message:
+               type: string
+               nullable: true
+               example: Oh, something went wrong!
+
+      UpdateUserRequest:
+         type: object
+         required:
+            - user_id
+            - name
+            - bio
+         properties:
+            user_id:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
             name:
-              type: string
-              format: text
+               type: string
+               format: text
+               example: Bustusha
             bio:
-              type: string
-              format: text
+               type: string
+               format: text
+               example: I am Bustusha
             avatar:
-              type: string
-              format: text
-              nullable: false
-            token:
-              type: string
-              format: jwt
-            followers_count:
-              type: integer
-            following_count:
-              type: integer
-        error_message:
-          type: string
-          nullable: true
+               type: string
+               format: text
+               nullable: true
+               example: http://127.0.0.1:8080/user_images/8f1a50c9-62e5-44d8-b076-74f85d759975.jpg
 
-    InfoUserResponse:
-      type: object
-      properties:
-        is_success:
-          type: boolean
-        error_message:
-          type: string
-          nullable: true
-        user:
-          type: object
-          nullable: true
-          properties:
-            id:
-              type: string
-              format: uuid
+      PostTextRequest:
+         type: object
+         required:
+            - caption
+            - user_id
+         properties:
+            caption:
+               type: string
+               format: text
+               example: some post content
             name:
-              type: string
-              format: text
-            bio:
-              type: string
-              format: text
-            avatar:
-              type: string
-              format: text
-              nullable: false
-            followers_count:
-              type: integer
-            following_count:
-              type: integer
-            is_following:
-              type: boolean
-              nullable: true
+               type: user_id
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+
+      Post:
+         type: object
+         nullable: true
+         properties:
+            post_id:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            caption:
+               type: string
+               format: text
+               example: post content
+            image_urls:
+               type: array
+               format: link
+               default: [ ]
+               example: [ http://127.0.0.1:8080/post_images/420f2573-f7e1-4d2b-a1d6-252e15c420dc.jpg, http://127.0.0.1:8080/post_images/ddaba8a9-4118-4cd1-98ec-836ff543b581.jpg ]
+            likes_count:
+               type: integer
+               example: 0
+            comments_count:
+               type: integer
+               example: 0
+            user_id:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            created_at:
+               type: string
+               format: text
+               example: 2025-06-21 13:57:09.143043
+            user_name:
+               type: string
+               format: text
+               example: Bustusha
+            user_avatar:
+               type: string
+               format: text
+               nullable: true
+               example: http://127.0.0.1:8080/user_images/8f1a50c9-62e5-44d8-b076-74f85d759975.jpg
+            is_liked:
+               type: boolean
+               nullable: true
+               example: true
             is_own_profile:
-              type: boolean
-              nullable: true
+               type: boolean
+               nullable: true
+               example: true
 
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: Bearer
-      bearerFormat: JWT
+      PostResponse:
+         type: object
+         properties:
+            is_success:
+               type: boolean
+               example: true
+            post:
+               type: object
+               nullable: true
+               items:
+                  $ref: '#/components/schemas/Post'
+            error_message:
+               type: string
+               nullable: true
+               example: Oh, something went wrong!
+
+      PostsResponse:
+         type: object
+         properties:
+            is_success:
+               type: boolean
+               example: true
+            posts:
+               type: array
+               nullable: true
+               items:
+                  $ref: '#/components/schemas/Post'
+            error_message:
+               type: string
+               nullable: true
+               example: Oh, something went wrong!
+
+   securitySchemes:
+      BearerAuth:
+         type: http
+         scheme: Bearer
+         bearerFormat: JWT
 
 paths:
-  /signup:
-    post:
-      summary: Register new user
-      tags: [ Authentication ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SingUpRequest'
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
+   /signup:
+      post:
+         summary: Register new user
+         tags: [ Authentication ]
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/SingUpRequest'
+         responses:
+            '201':
+               description: Created
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/AuthResponse'
 
-  /signin:
-    post:
-      summary: Login user
-      tags: [ Authentication ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SingInRequest'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
+   /signin:
+      post:
+         summary: Login user
+         tags: [ Authentication ]
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/SingInRequest'
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/AuthResponse'
 
-  /user:
-    get:
-      summary: get user info by email
-      tags: [ User ]
-      security:
-        - BearerAuth: [ ]
-      parameters:
-        - name: email
-          in: query
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InfoUserResponse'
+   /user:
+      get:
+         summary: get user info by email
+         tags: [ User ]
+         security:
+            -  BearerAuth: [ ]
+         parameters:
+            -  name: email
+               in: query
+               schema:
+                  type: string
+                  format: email
+                  example: fish@gmail.com
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/InfoUserResponse'
+
+   /user/{user_id}:
+      get:
+         summary: get user info by id
+         tags: [ User ]
+         security:
+            -  BearerAuth: [ ]
+         parameters:
+            -  name: user_id
+               in: path
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+
+            -  name: current_user_id
+               in: query
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/InfoUserResponse'
+
+   /user/update:
+      post:
+         summary: edit user info
+         tags: [ User ]
+         security:
+            -  BearerAuth: [ ]
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/UpdateUserRequest'
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/InfoUserResponse'
+
+   /post/create:
+      post:
+         summary: edit post
+         tags: [ Post ]
+         security:
+            -  BearerAuth: [ ]
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/PostTextRequest'
+         responses:
+            '201':
+               description: Created
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/PostResponse'
+
+   /post/{post_id}:
+      get:
+         summary: get post info by id
+         tags: [ Post ]
+         security:
+            -  BearerAuth: [ ]
+         parameters:
+            -  name: post_id
+               in: path
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+
+            -  name: current_user_id
+               in: query
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/PostResponse'
+
+      delete:
+         summary: delete post by post_id
+         tags: [ Post ]
+         security:
+            -  BearerAuth: [ ]
+         parameters:
+            -  name: post_id
+               in: path
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/InfoUserResponse'
+
+   /posts/feed:
+      get:
+         summary: get posts own and all following
+         tags: [ Post ]
+         security:
+            -  BearerAuth: [ ]
+         parameters:
+            -  name: user_id
+               in: query
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            -  name: page
+               in: query
+               required: false
+               schema:
+                  type: integer
+                  default: 0
+            -  name: page_size
+               in: query
+               required: false
+               schema:
+                  type: integer
+                  default: 10
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/PostsResponse'
+
+   /posts/{user_id}:
+      get:
+         summary: get posts own and all following
+         tags: [ Post ]
+         security:
+            -  BearerAuth: [ ]
+         parameters:
+            -  name: user_id
+               in: path
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            -  name: current_user_id
+               in: query
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            -  name: page
+               in: query
+               required: false
+               schema:
+                  type: integer
+                  default: 0
+            -  name: page_size
+               in: query
+               required: false
+               schema:
+                  type: integer
+                  default: 10
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/PostsResponse'
