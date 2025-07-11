@@ -179,13 +179,12 @@ components:
                format: text
                example: some post content
             name:
-               type: user_id
-               format: uuid
+               type: string
+               format: text
                example: da2d416e-3e82-40f2-9935-a98e4823b2ec
 
       Post:
          type: object
-         nullable: true
          properties:
             post_id:
                type: string
@@ -241,7 +240,7 @@ components:
             post:
                type: object
                nullable: true
-               items:
+               example:
                   $ref: '#/components/schemas/Post'
             error_message:
                type: string
@@ -262,6 +261,174 @@ components:
             error_message:
                type: string
                nullable: true
+               example: Oh, something went wrong!
+
+      FollowRequest:
+         type: object
+         required:
+            - follower
+            - following
+         properties:
+            follower:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            following:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+
+      SimpleResponse:
+         type: object
+         properties:
+            is_success:
+               type: boolean
+               example: true
+            error_message:
+               type: string
+               nullable: true
+               example: Oh, something went wrong!
+
+      FollowUserData:
+         type: object
+         properties:
+            id:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            name:
+               type: string
+               format: text
+               example: Bustusha
+            bio:
+               type: string
+               format: text
+               example: Bustusha
+            avatar:
+               type: string
+               format: text
+               nullable: true
+               example: http://127.0.0.1:8080/user_images/8f1a50c9-62e5-44d8-b076-74f85d759975.jpg
+            is_following:
+               type: boolean
+               nullable: true
+               example: true
+
+      FollowsResponse:
+         type: object
+         properties:
+            is_success:
+               type: boolean
+               example: true
+            follows:
+               type: array
+               nullable: true
+               items:
+                  $ref: '#/components/schemas/FollowUserData'
+            error_message:
+               type: string
+               nullable: true
+               example: Oh, something went wrong!
+
+      PostLikeRequest:
+         type: object
+         required:
+            - post_id
+            - user_id
+         properties:
+            post_id:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            user_id:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+
+      NewCommentRequest:
+         type: object
+         required:
+            - post_id
+            - user_id
+            - content
+         properties:
+            post_id:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            user_id:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            content:
+               type: string
+               format: text
+               example: some content comment
+
+      PostComment:
+         type: object
+         properties:
+            comment_id:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            post_id:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            user_id:
+               type: string
+               format: uuid
+               example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            content:
+               type: string
+               format: text
+               example: post content
+            user_name:
+               type: string
+               format: text
+               example: post content
+            avatar:
+               type: string
+               format: text
+               nullable: true
+               example: http://127.0.0.1:8080/user_images/8f1a50c9-62e5-44d8-b076-74f85d759975.jpg
+            created_at:
+               type: string
+               format: text
+               example: 2025-06-21 13:57:09.143043
+
+      CommentResponse:
+         type: object
+         properties:
+            is_success:
+               type: boolean
+               example: true
+            post_comment:
+               type: object
+               nullable: true
+               example:
+                  $ref: '#/components/schemas/PostComment'
+            error_message:
+               type: string
+               nullable: true
+               example: Oh, something went wrong!
+
+      ListCommentResponse:
+         type: object
+         properties:
+            is_success:
+               type: boolean
+               example: true
+            post_comments:
+               type: array
+               nullable: true
+               items:
+                  $ref: '#/components/schemas/PostComment'
+            error_message:
+               type: string
+               nullable: true
+               default: null
                example: Oh, something went wrong!
 
    securitySchemes:
@@ -523,3 +690,263 @@ paths:
                   application/json:
                      schema:
                         $ref: '#/components/schemas/PostsResponse'
+
+   /follows/follow:
+      post:
+         summary: follow on user
+         tags: [ Follows ]
+         security:
+            -  BearerAuth: [ ]
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/FollowRequest'
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/SimpleResponse'
+
+   /follows/unfollow:
+      post:
+         summary: unfollow in user
+         tags: [ Follows ]
+         security:
+            -  BearerAuth: [ ]
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/FollowRequest'
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/SimpleResponse'
+
+   /follows/followers:
+      get:
+         summary: get all followers
+         tags: [ Follows ]
+         security:
+            -  BearerAuth: [ ]
+         parameters:
+            -  name: user_id
+               in: query
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            -  name: page
+               in: query
+               required: false
+               schema:
+                  type: integer
+                  default: 0
+            -  name: page_size
+               in: query
+               required: false
+               schema:
+                  type: integer
+                  default: 10
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/FollowsResponse'
+
+   /follows/following:
+      get:
+         summary: get all following
+         tags: [ Follows ]
+         security:
+            -  BearerAuth: [ ]
+         parameters:
+            -  name: user_id
+               in: query
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            -  name: page
+               in: query
+               required: false
+               schema:
+                  type: integer
+                  default: 0
+            -  name: page_size
+               in: query
+               required: false
+               schema:
+                  type: integer
+                  default: 10
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/FollowsResponse'
+
+   /follows/suggestions:
+      get:
+         summary: get recommend following
+         tags: [ Follows ]
+         security:
+            -  BearerAuth: [ ]
+         parameters:
+            -  name: user_id
+               in: query
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/FollowsResponse'
+
+   /post/likes/add:
+      post:
+         summary: add like post
+         tags: [ PostLike ]
+         security:
+            -  BearerAuth: [ ]
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/PostLikeRequest'
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/SimpleResponse'
+
+   /post/likes/remove:
+      post:
+         summary: remove like post
+         tags: [ PostLike ]
+         security:
+            -  BearerAuth: [ ]
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/PostLikeRequest'
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/SimpleResponse'
+
+   /post/comments/create:
+      post:
+         summary: create comment to post
+         tags: [ PostComments ]
+         security:
+            -  BearerAuth: [ ]
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/NewCommentRequest'
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/CommentResponse'
+
+   /post/comments/delete/{comment_id}:
+      delete:
+         summary: delete comment post
+         tags: [ PostComments ]
+         security:
+            -  BearerAuth: [ ]
+         parameters:
+            -  name: comment_id
+               in: path
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            -  name: user_id
+               in: query
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            -  name: post_id
+               in: query
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/SimpleResponse'
+
+   /post/comments/{post_id}:
+      get:
+         summary: get all comments post
+         tags: [ PostComments ]
+         security:
+            -  BearerAuth: [ ]
+         parameters:
+            -  name: post_id
+               in: path
+               required: true
+               schema:
+                  type: string
+                  format: uuid
+                  example: da2d416e-3e82-40f2-9935-a98e4823b2ec
+            -  name: page
+               in: query
+               required: false
+               schema:
+                  type: integer
+                  default: 0
+            -  name: page_size
+               in: query
+               required: false
+               schema:
+                  type: integer
+                  default: 10
+         responses:
+            '200':
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/ListCommentResponse'
